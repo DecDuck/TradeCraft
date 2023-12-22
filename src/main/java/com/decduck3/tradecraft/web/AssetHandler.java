@@ -1,6 +1,7 @@
 package com.decduck3.tradecraft.web;
 
 import com.decduck3.tradecraft.TradeCraft;
+import com.decduck3.tradecraft.assetunpacker.AssetUnpacker;
 import io.undertow.io.IoCallback;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
@@ -23,6 +24,13 @@ import java.nio.file.Path;
 public class AssetHandler implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange httpServerExchange) throws Exception {
+        if(!AssetUnpacker.unpackReady()){
+            httpServerExchange.setStatusCode(500);
+            httpServerExchange.getResponseHeaders().add(HttpString.tryFromString("Content-Type"), "text/plain");
+            httpServerExchange.getResponseSender().send("server is still unpacking assets");
+            return;
+        }
+
         String assetPath = httpServerExchange.getRequestPath().substring("/api/v1/asset".length());
         File assetFile = new File(String.valueOf(Path.of(TradeCraft.unpacker().getUnpackTarget().getAbsolutePath(), TradeCraft.unpacker().getUnpackVersion(), "assets/minecraft/textures", assetPath)));
         if (!assetFile.exists()) {

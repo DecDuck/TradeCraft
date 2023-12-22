@@ -176,4 +176,8 @@ public class AssetUnpacker {
     public File getUnpackTarget() {
         return unpackTarget;
     }
+
+    public static Boolean unpackReady() {
+        return UNPACK_READY;
+    }
 }
