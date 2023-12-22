@@ -1,0 +1,5 @@
+name: TradeCraft
+version: '${version}'
+main: com.decduck3.tradecraft.TradeCraft
+api-version: '1.20'
+description: TradeCraft adds a fully-functional web UI for your economy.

@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+
+    id("xyz.jpenilla.run-paper") version "2.2.2"
+}
+
+group = 'com.decduck3'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven { url 'https://jitpack.io' }
+}
+
+configurations {
+    embed
+}
+
+dependencies {
+    // Paper
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+
+    // Vault
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+
+    // Undertow
+    embed("io.undertow:undertow-core:2.1.0.Final")
+    embed("io.undertow:undertow-servlet:2.1.0.Final")
+    embed("io.undertow:undertow-websockets-jsr:2.1.0.Final")
+
+    // GSON
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // HTTP libraries
+    implementation 'org.apache.httpcomponents:httpcore:4.4.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5'
+
+    // compile embed
+    configurations.compileOnly.extendsFrom(configurations.embed)
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('paper-plugin.yml') {
+        expand props
+    }
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.2")
+    }
+}
+
+jar {
+    from {
+        configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
