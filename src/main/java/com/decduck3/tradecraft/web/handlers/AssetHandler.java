@@ -1,24 +1,17 @@
-package com.decduck3.tradecraft.web;
+package com.decduck3.tradecraft.web.handlers;
 
 import com.decduck3.tradecraft.TradeCraft;
-import com.decduck3.tradecraft.assetunpacker.AssetUnpacker;
-import io.undertow.io.IoCallback;
-import io.undertow.io.Sender;
+import com.decduck3.tradecraft.utils.AssetUnpacker;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
-import org.xnio.IoUtils;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.file.Path;
 
 public class AssetHandler implements HttpHandler {

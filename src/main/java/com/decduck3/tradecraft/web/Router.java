@@ -1,33 +1,38 @@
 package com.decduck3.tradecraft.web;
 
-import com.decduck3.tradecraft.TradeCraft;
+import com.decduck3.tradecraft.web.handlers.AssetHandler;
+import com.decduck3.tradecraft.web.handlers.AuthenticationHandler;
+import com.decduck3.tradecraft.web.handlers.BrandingHandler;
 import io.undertow.Handlers;
-import io.undertow.io.IoCallback;
-import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import org.apache.commons.logging.Log;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class Router {
+    public static AuthenticationHandler authenticationHandler = new AuthenticationHandler();
     public static HttpHandler router() {
-        return Handlers.path(exchange -> {
+        return authenticationHandler.getMiddleware(Handlers.path(exchange -> {
                     // Forward to SPA
                 })
                 .addPrefixPath("/api/v1/asset",
                         new AssetHandler()
                 )
+                .addPrefixPath("/api/v1/branding",
+                        httpServerExchange -> {
+                            // Force IO thread
+                            BrandingHandler handler = new BrandingHandler();
+                            httpServerExchange.startBlocking();
+                            if (httpServerExchange.isInIoThread()) {
+                                httpServerExchange.dispatch(handler);
+                            } else {
+                                handler.handleRequest(httpServerExchange);
+                            }
+                        }
+                )
                 .addPrefixPath("/api/v1/auth",
-                        Handlers.routing()
+                        authenticationHandler
                         // Add auth routes here
                 )
                 .addPrefixPath("/api/v1",
                         Handlers.routing()
-                )
-                ;
+                ));
     }
 }

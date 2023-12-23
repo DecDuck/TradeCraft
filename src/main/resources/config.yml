@@ -1,3 +1,16 @@
 network:
   host: "localhost"
   port: 3000
+db:
+  type: sqlite
+  name: tradecraft # with SQLite, it creates [name].db
+  username: ""
+  password: ""
+session:
+  # Session controller, use 'memory' for a single-instance server
+  type: "memory"
+  cookie:
+    # Require HTTPS for sessions
+    secure: false
+    # In seconds
+    maxAge: 86400

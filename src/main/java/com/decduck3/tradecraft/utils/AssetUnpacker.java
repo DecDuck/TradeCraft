@@ -1,4 +1,4 @@
-package com.decduck3.tradecraft.assetunpacker;
+package com.decduck3.tradecraft.utils;
 
 import com.decduck3.tradecraft.TradeCraft;
 import com.google.gson.Gson;
@@ -12,8 +12,6 @@ import org.bukkit.Server;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -24,9 +22,9 @@ public class AssetUnpacker {
     private Server server;
     private File unpackTarget;
 
-    public AssetUnpacker(Server server, File pluginFolder) {
+    public AssetUnpacker(Server server) {
         this.server = server;
-        unpackTarget = new File(pluginFolder, "pack");
+        unpackTarget = new File(TradeCraft.dataFolder(), "pack");
     }
 
     public String getUnpackVersion(){
@@ -36,6 +34,15 @@ public class AssetUnpacker {
             version = server.getMinecraftVersion();
         }
         return version;
+    }
+
+    public void prepareUnpack(){
+        if(unpackExists()){
+            TradeCraft.logger().info("Skipped unpack - exists");
+            UNPACK_READY = true;
+            return;
+        }
+        startUnpack();
     }
 
     public boolean unpackExists() {
@@ -100,7 +107,7 @@ public class AssetUnpacker {
                 if(entry.isDirectory()){
                     continue;
                 }
-                if(!entry.getName().startsWith("assets/minecraft/textures")){
+                if(!entry.getName().startsWith("com/decduck3/tradecraft/assets/minecraft/textures")){
                     continue;
                 }
                 // Doesn't really catch anything, but better safe than sorry yk
