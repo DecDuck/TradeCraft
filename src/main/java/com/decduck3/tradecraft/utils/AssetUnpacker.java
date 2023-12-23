@@ -107,7 +107,7 @@ public class AssetUnpacker {
                 if(entry.isDirectory()){
                     continue;
                 }
-                if(!entry.getName().startsWith("com/decduck3/tradecraft/assets/minecraft/textures")){
+                if(!entry.getName().startsWith("assets/minecraft/textures")){
                     continue;
                 }
                 // Doesn't really catch anything, but better safe than sorry yk

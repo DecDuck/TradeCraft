@@ -55,14 +55,15 @@ public class AuthenticationHandler implements HttpHandler {
                 .add("POST", "/link/finish", exchange -> {
                     exchange.getRequestReceiver().receiveFullString(new Receiver.FullStringCallback() {
                         @Override
-                        public void handle(HttpServerExchange httpServerExchange, String s) {
+                        public void handle(HttpServerExchange h, String s) {
                             AccountLinkManager.PendingAccountLink link = TradeCraft.accountLinkManager().collect(s);
                             if(link == null){
                                 exchange.setStatusCode(400);
+                                exchange.getResponseSender().send("Code expired or not activated. Please refresh the page and try again.");
                                 exchange.getResponseSender().close();
                                 return;
                             }
-                            data.setData("playerUUID", link.getUuid().toString());
+                            storage.save(sessionToken, "playerUUID", link.getUuid().toString());
                             exchange.setStatusCode(200);
                             exchange.getResponseSender().close();
                         }
