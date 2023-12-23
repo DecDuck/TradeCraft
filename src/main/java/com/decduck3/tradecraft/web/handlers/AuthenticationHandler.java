@@ -12,8 +12,6 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
-import io.undertow.util.HttpString;
-import org.bukkit.OfflinePlayer;
 
 public class AuthenticationHandler implements HttpHandler {
     private SessionStorage storage;

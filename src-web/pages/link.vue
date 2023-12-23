@@ -17,9 +17,9 @@
         session. Use the command /tc authorize [code] to link your account.
       </p>
       <h1
-        class="mt-4 text-3xl font-bold tracking-tight text-cyan-200 tracking-[.3em] sm:text-5xl font-mono"
+        class="mt-4 text-3xl font-bold tracking-tight text-cyan-200 space-x-4 sm:text-5xl font-mono"
       >
-        {{ code }}
+        <span v-for="letter in code.split('')">{{ letter }}</span>
       </h1>
 
       <div class="mt-10 flex items-center justify-center gap-x-6">
