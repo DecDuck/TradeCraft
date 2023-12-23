@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-zinc-900/95 text-zinc-100">
+  <div v-if="user" class="min-h-screen bg-zinc-900/95 text-zinc-100">
     <TransitionRoot as="template" :show="sidebarOpen">
       <Dialog
         as="div"
@@ -193,7 +193,7 @@
                   alt=""
                 />
                 <span class="sr-only">Your profile</span>
-                <span aria-hidden="true">Tom Cook</span>
+                <span aria-hidden="true">{{user.name}}</span>
               </a>
             </li>
           </ul>

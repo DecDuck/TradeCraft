@@ -1,9 +1,10 @@
 network:
   host: "localhost"
   port: 3000
+  # Optional, enables the use of generating a link url with /authorize
+  externalUrl:
 db:
-  type: sqlite
-  name: tradecraft # with SQLite, it creates [name].db
+  url: "sqlite://file:tradecraft.db"
   username: ""
   password: ""
 session:

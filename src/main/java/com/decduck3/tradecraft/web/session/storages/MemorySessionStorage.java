@@ -26,6 +26,11 @@ public class MemorySessionStorage implements SessionStorage {
     }
 
     @Override
+    public void delete(String id, String key) {
+        storage.get(id).remove(key);
+    }
+
+    @Override
     public String genID() {
         return ("tc." + UUID.randomUUID() + UUID.randomUUID()).replace("-", "");
     }

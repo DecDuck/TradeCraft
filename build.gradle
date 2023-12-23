@@ -21,15 +21,15 @@ configurations {
 
 dependencies {
     // Paper
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
 
     // Vault
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
 
     // Undertow
-    embed('io.undertow:undertow-core:2.2.27.Final')
-    embed('io.undertow:undertow-servlet:2.2.0.Final')
-    embed('io.undertow:undertow-websockets-jsr:2.2.10.Final')
+    embed 'io.undertow:undertow-core:2.2.27.Final'
+    embed 'io.undertow:undertow-servlet:2.2.0.Final'
+    embed 'io.undertow:undertow-websockets-jsr:2.2.10.Final'
 
     // GSON
     embed 'com.google.code.gson:gson:2.10.1'
@@ -37,6 +37,8 @@ dependencies {
     // HTTP libraries
     embed 'org.apache.httpcomponents:httpcore:4.4.1'
     embed 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    embed "org.jooq:jooq:3.20.0-SNAPSHOT"
 
     // compile embed
     configurations.compileOnly.extendsFrom(configurations.embed)

@@ -54,7 +54,8 @@ definePageMeta({
   layout: false,
 });
 
-const code: string = await $fetch("/api/v1/auth/link/begin");
+const code = ref<string>("");
+const route = useRoute();
 const router = useRouter();
 
 const loading = ref(false);
@@ -62,7 +63,7 @@ const error = ref(null);
 
 function complete() {
   loading.value = true;
-  $fetch("/api/v1/auth/link/finish", { method: "POST", body: code })
+  $fetch("/api/v1/auth/link/finish", { method: "POST", body: code.value })
     .then(() => {
       router.push("/");
     })
@@ -75,4 +76,11 @@ function complete() {
 useHead({
   title: "Link your account",
 });
+
+if(route.hash){
+  code.value = route.hash.slice(1);
+  complete();
+}else{
+  code.value = await $fetch("/api/v1/auth/link/begin");
+}
 </script>
