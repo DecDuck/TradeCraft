@@ -5,7 +5,11 @@
     >
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <div>
-          <img class="h-10 w-auto" :src="'/api/v1/branding/banner'" />
+          <img
+            class="h-10 w-auto"
+            :src="'/api/v1/branding/banner'"
+            :alt="appConfig.app_name"
+          />
           <h2
             class="mt-8 text-2xl font-bold leading-9 tracking-tight text-zinc-100"
           >
@@ -35,7 +39,7 @@
                   <input
                     id="username"
                     name="username"
-                    type="username"
+                    type="text"
                     autocomplete="username"
                     required
                     placeholder="myUsername"
@@ -74,6 +78,25 @@
                   Sign in
                 </SpinnerButton>
               </div>
+
+              <div
+                v-if="error != null"
+                class="mt-6 rounded-md bg-red-600/5 p-4"
+              >
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <XCircleIcon
+                      class="h-5 w-5 text-red-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-400">
+                      {{ error }}
+                    </h3>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -90,12 +113,17 @@
 </template>
 
 <script setup lang="ts">
+import { XCircleIcon } from "@heroicons/vue/20/solid";
 const username = ref("");
 const password = ref("");
 const loading = ref(false);
 
+const error = ref(null);
+
 const user = useUser();
 const router = useRouter();
+
+const appConfig = useState<{ app_name: string }>("appConfig");
 
 function login() {
   loading.value = true;
@@ -107,7 +135,10 @@ function login() {
       user.value = await $fetch("/api/v1/auth/fetch");
       router.push("/");
     })
-    .catch(() => {
+    .catch((err) => {
+      error.value =
+        err.data ||
+        "There was a problem signing you in. Check your username and password and try again.";
       loading.value = false;
     });
 }

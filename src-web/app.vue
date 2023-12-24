@@ -1,18 +1,31 @@
 <template>
-  <NuxtLoadingIndicator color="repeating-linear-gradient(to right,#a5f3fc 0%,#22d3ee 100%)" />
+  <NuxtLoadingIndicator
+    color="repeating-linear-gradient(to right,#a5f3fc 0%,#22d3ee 100%)"
+  />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import type { TradeCraftUser } from "./types/user";
-const appConfig: { app_name: string } = await $fetch("/api/v1/branding/config");
+const appConfig = await useState<{ app_name: string }>("appConfig");
 
 const router = useRouter();
 
+const { data, error } = await useAsyncData<{ app_name: string }>(
+  "appConfig",
+  () => $fetch("/api/v1/branding/config")
+);
+if (error.value != null || data.value == null) {
+  router.push("/link");
+} else {
+  appConfig.value = data.value;
+}
+
 useHead({
   titleTemplate: (title) =>
-    title ? `${title} | ${appConfig["app_name"]}` : appConfig["app_name"],
+    title
+      ? `${title} | ${appConfig.value?.app_name}`
+      : appConfig.value?.app_name ?? "TradeCraft",
 });
 </script>

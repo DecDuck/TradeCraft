@@ -99,7 +99,8 @@ public class AuthenticationHandler implements HttpHandler {
                         }
 
                         // Check username
-                        if(User.findUserByUsername(body.username) != null){
+                        User existingUser = User.findUserByUsername(body.username);
+                        if(existingUser != null && !existingUser.getId().equals(user.getId())){
                             outExchange.setStatusCode(400);
                             outExchange.getResponseSender().send("Username already taken, try another.");
                             outExchange.getResponseSender().close();

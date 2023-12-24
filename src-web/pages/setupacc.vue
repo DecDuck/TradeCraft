@@ -1,7 +1,11 @@
 <template>
   <Card class="m-4 flex flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-10 w-auto" :src="'/api/v1/branding/banner'" />
+      <img
+        class="mx-auto h-10 w-auto"
+        :src="'/api/v1/branding/banner'"
+        :alt="appConfig.app_name"
+      />
       <h2
         class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-zinc-100"
       >
@@ -66,34 +70,53 @@
             Apply
           </SpinnerButton>
         </div>
+
+        <div v-if="error != null" class="mt-6 rounded-md bg-red-600/5 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-400">
+                {{ error }}
+              </h3>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
   </Card>
 </template>
 
 <script setup lang="ts">
+import { XCircleIcon } from "@heroicons/vue/20/solid";
 const username = ref("");
 const password = ref("");
 const loading = ref(false);
 
+const error = ref(null);
+
 const router = useRouter();
 const user = useUser();
+
+const appConfig = useState<{ app_name: string }>("appConfig");
 
 function submit() {
   $fetch("/api/v1/auth/setupacc", {
     method: "POST",
     body: { username: username.value, password: password.value },
   })
-  .then(async () => {
-    user.value = await $fetch("/api/v1/auth/fetch");
-    router.push('/settings');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+    .then(async () => {
+      user.value = await $fetch("/api/v1/auth/fetch");
+      router.push("/settings");
+    })
+    .catch((err) => {
+      error.value =
+        err.data || "An unknown error occurred. Please reload the page.";
+    });
 }
 
 useHead({
-    title: "Setup Account"
-})
+  title: "Setup Account",
+});
 </script>

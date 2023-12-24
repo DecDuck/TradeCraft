@@ -1,12 +1,6 @@
 package com.decduck3.tradecraft.security;
 
-import com.decduck3.tradecraft.TradeCraft;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class AccountLinkManager {
@@ -23,7 +17,7 @@ public class AccountLinkManager {
             }
         }
 
-        PendingAccountLink accountLink = new PendingAccountLink(code, null, LocalDateTime.now().plusMinutes(30));
+        PendingAccountLink accountLink = new PendingAccountLink(code, null, LocalDateTime.now().plusMinutes(5));
         pendingLinksByCode.put(code, accountLink);
         return accountLink;
     }
