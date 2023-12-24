@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="min-h-screen bg-zinc-900/95 text-zinc-100">
+  <div v-if="user" class="min-h-screen bg-zinc-950 text-zinc-100">
     <TransitionRoot as="template" :show="sidebarOpen">
       <Dialog
         as="div"
@@ -66,7 +66,10 @@
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
-                        <li v-for="(item, itemIdx) in navigation" :key="item.name">
+                        <li
+                          v-for="(item, itemIdx) in navigation"
+                          :key="item.name"
+                        >
                           <NuxtLink
                             :href="item.href"
                             :class="[
@@ -185,8 +188,8 @@
               </ul>
             </li>
             <li class="-mx-6 mt-auto">
-              <a
-                href="#"
+              <NuxtLink
+                href="/settings"
                 class="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-zinc-800"
               >
                 <img
@@ -196,7 +199,7 @@
                 />
                 <span class="sr-only">Your profile</span>
                 <span aria-hidden="true">{{ user.name }}</span>
-              </a>
+              </NuxtLink>
             </li>
           </ul>
         </nav>
@@ -214,22 +217,26 @@
         <span class="sr-only">Open sidebar</span>
         <Bars3Icon class="h-6 w-6" aria-hidden="true" />
       </button>
-      <div class="flex-1 text-sm font-semibold leading-6 text-white">
-        Dashboard
-      </div>
-      <a href="#">
+      <div class="flex-1" />
+      <NuxtLink href="/settings">
         <span class="sr-only">Your profile</span>
         <img
           class="h-8 w-8 rounded-full bg-zinc-800"
           :src="profilePictureURL"
           alt=""
         />
-      </a>
+      </NuxtLink>
     </div>
 
-    <main class="lg:pl-72 flex flex-col items-center">
-      <slot />
+    <main class="lg:pl-72 min-h-screen flex flex-col items-center overflow-auto">
+      <div class="flex flex-col items-center grow">
+        <slot />
+      </div>
+      <div class="uppercase pb-2 text-xs text-zinc-700 font-bold tracking-widest text-center">
+        NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT. Powered by TradeCraft.
+      </div>
     </main>
+    
   </div>
 </template>
 
@@ -278,9 +285,13 @@ try {
 
 router.afterEach(() => {
   sidebarOpen.value = false;
-})
+});
 
-const profilePictureURL = computed(() => `https://visage.surgeplay.com/bust/${user.value?.uuid}`);
+const profilePictureURL = computed(
+  () => `https://visage.surgeplay.com/bust/${user.value?.uuid}`
+);
 
-const activeIndex = computed(() => navigation.findIndex((e) => route.path.startsWith(e.href)));
+const activeIndex = computed(() =>
+  navigation.findIndex((e) => route.path.startsWith(e.href))
+);
 </script>

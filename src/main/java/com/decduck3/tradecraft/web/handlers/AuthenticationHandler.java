@@ -16,13 +16,13 @@ import io.undertow.server.handlers.CookieImpl;
 import io.undertow.util.HttpString;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.OfflinePlayer;
+
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 public class AuthenticationHandler implements HttpHandler {
-    private record AuthFetchUser (String name, String uuid){}
+    private record AuthFetchUser (String name, String uuid, boolean loginConfigured){}
 
     private SessionStorage storage;
     public AuthenticationHandler(){
@@ -64,7 +64,7 @@ public class AuthenticationHandler implements HttpHandler {
                         return;
                     }
 
-                    AuthFetchUser returnUser = new AuthFetchUser(user.getCUsername(), user.getPlayerUUID());
+                    AuthFetchUser returnUser = new AuthFetchUser(user.getCUsername(), user.getPlayerUUID(), user.isAlternativeLogin());
                     Gson gson = new Gson();
 
                     exchange.getResponseHeaders().add(HttpString.tryFromString("Content-Type"), "application/json");

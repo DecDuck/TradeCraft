@@ -1,4 +1,5 @@
 export interface TradeCraftUser {
     name: string,
-    uuid: string
+    uuid: string,
+    loginConfigured: boolean,
 }
