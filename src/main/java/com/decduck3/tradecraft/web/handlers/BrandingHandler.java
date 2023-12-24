@@ -32,6 +32,16 @@ public class BrandingHandler implements HttpHandler {
                 finalStream = TradeCraft.singleton().getResource("web/favicon.png");
             }
         }
+        // Handle login background
+        if (path.startsWith("/login")) {
+            File userProvided = new File(TradeCraft.dataFolder(), "web/login.png");
+            if (userProvided.exists()) {
+                finalStream = new FileInputStream(userProvided);
+            }else{
+                // Send the default one
+                finalStream = TradeCraft.singleton().getResource("web/login.png");
+            }
+        }
         // Handle web config
         if (path.startsWith("/config")) {
             File userProvided = new File(TradeCraft.dataFolder(), "web/config.json");

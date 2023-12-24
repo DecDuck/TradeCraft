@@ -232,7 +232,7 @@
       <div class="flex flex-col items-center grow">
         <slot />
       </div>
-      <div class="max-w-xl uppercase pb-2 text-xs text-zinc-700 font-bold tracking-widest text-center">
+      <div class="max-w-xl uppercase pb-2 text-xs text-zinc-700 font-bold tracking-widest text-center px-4">
         NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT. Powered by TradeCraft.
       </div>
     </main>

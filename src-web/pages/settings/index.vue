@@ -52,7 +52,7 @@
       </div>
     </Card>
     <Card
-      class="hidden md:flex text-center text-zinc-500 text-sm flex-col items-center justify-center gap-y-2"
+      class="col-span-3 md:col-span-1 flex text-center text-zinc-500 text-sm flex-col items-center justify-center gap-y-2"
     >
       <img :src="'/api/v1/branding/banner'" />
       <p>Powered by TradeCraft</p>
