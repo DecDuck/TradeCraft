@@ -232,7 +232,7 @@
       <div class="flex flex-col items-center grow">
         <slot />
       </div>
-      <div class="uppercase pb-2 text-xs text-zinc-700 font-bold tracking-widest text-center">
+      <div class="max-w-xl uppercase pb-2 text-xs text-zinc-700 font-bold tracking-widest text-center">
         NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT. Powered by TradeCraft.
       </div>
     </main>
@@ -260,7 +260,7 @@ import {
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
-  { name: "Market", href: "/market", icon: BuildingStorefrontIcon },
+  { name: "Marketplace", href: "/market", icon: BuildingStorefrontIcon },
   { name: "Sell", href: "/sell", icon: CurrencyDollarIcon },
   { name: "Companies", href: "/companies", icon: BuildingOffice2Icon },
   { name: "Assets", href: "/assets", icon: ChartPieIcon },

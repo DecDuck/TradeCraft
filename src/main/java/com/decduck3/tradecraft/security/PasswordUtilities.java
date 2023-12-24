@@ -6,7 +6,7 @@ public class PasswordUtilities {
     private static final int SALT_ROUNDS = 16;
     public static boolean validPassword(String password){
         // Simple password rules, just needs to be longer or equal to 16 characters
-        return password.length() >= 16;
+        return password.length() >= 12;
     }
 
     // Abstractions on top of BCrypt for easy swap-out

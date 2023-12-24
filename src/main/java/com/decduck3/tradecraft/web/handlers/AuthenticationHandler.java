@@ -68,15 +68,18 @@ public class AuthenticationHandler implements HttpHandler {
                     exchange.getResponseHeaders().add(HttpString.tryFromString("Content-Type"), "application/json");
                     exchange.getResponseSender().send(gson.toJson(returnUser));
                 })
-                .add("POST", "/setup-account", exchange -> {
+                .add("POST", "/setupacc", exchange -> {
                     User user = requireUser(exchange, sessionToken);
                     if (user == null) return;
 
+                    // Decided to use the same endpoint for creating/updating
+                    /*
                     if (user.isAlternativeLogin()) {
                         exchange.setStatusCode(403);
                         exchange.getResponseSender().close();
                         return;
                     }
+                     */
 
                     exchange.getRequestReceiver().receiveFullString((outExchange, bodyRaw) -> {
                         if (bodyRaw == null || bodyRaw.isBlank() || bodyRaw.isEmpty()) {
@@ -106,7 +109,7 @@ public class AuthenticationHandler implements HttpHandler {
                         // Check password and hash
                         if(!PasswordUtilities.validPassword(body.password)){
                             outExchange.setStatusCode(400);
-                            outExchange.getResponseSender().send("Invalid password, must be longer than 15 characters.");
+                            outExchange.getResponseSender().send("Invalid password, must be longer than 11 characters.");
                             outExchange.getResponseSender().close();
                             return;
                         }
@@ -124,7 +127,42 @@ public class AuthenticationHandler implements HttpHandler {
                         outExchange.setStatusCode(201);
                         outExchange.getResponseSender().close();
                     });
+                })
+                .add("POST", "/login", exchange -> {
+                    exchange.getRequestReceiver().receiveFullString((outExchange, bodyRaw) -> {
+                        if (bodyRaw == null || bodyRaw.isBlank() || bodyRaw.isEmpty()) {
+                            outExchange.setStatusCode(400);
+                            outExchange.getResponseSender().close();
+                            return;
+                        }
 
+                        Gson gson = new Gson();
+                        UsernamePasswordBody body;
+                        try {
+                            body = gson.fromJson(bodyRaw, UsernamePasswordBody.class);
+                        } catch (JsonSyntaxException e) {
+                            outExchange.setStatusCode(400);
+                            outExchange.getResponseSender().close();
+                            return;
+                        }
+
+                        User user = User.findUserByUsername(body.getUsername());
+                        if(user == null){
+                            outExchange.setStatusCode(403);
+                            outExchange.getResponseSender().close();
+                            return;
+                        }
+
+                        if(!PasswordUtilities.comparePasswords(body.getPassword(), user.getAlternativePasswordHash())){
+                            outExchange.setStatusCode(403);
+                            outExchange.getResponseSender().close();
+                            return;
+                        }
+
+                        storage.save(sessionToken, "userID", user.getId().toString());
+                        outExchange.setStatusCode(200);
+                        outExchange.getResponseSender().close();
+                    });
                 })
                 .add("GET", "/link/begin", exchange -> {
                     AccountLinkManager.PendingAccountLink link = TradeCraft.accountLinkManager().generate();
