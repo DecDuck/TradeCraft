@@ -108,4 +108,13 @@ public class User {
         }
         return users.get(0);
     }
+
+    public static User findUserByUsername(String username){
+        List<User> users = new ArrayList<>();
+        TradeCraft.database().getUsers().find(eq("alternativeUsername", username)).into(users);
+        if(users.size() != 1){
+            return null;
+        }
+        return users.get(0);
+    }
 }

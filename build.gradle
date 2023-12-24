@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.decduck3'
-version = '0.3.0'
+version = '0.3.1'
 
 repositories {
     mavenCentral()
@@ -28,8 +28,6 @@ dependencies {
 
     // Undertow
     embed 'io.undertow:undertow-core:2.2.27.Final'
-    embed 'io.undertow:undertow-servlet:2.2.0.Final'
-    embed 'io.undertow:undertow-websockets-jsr:2.2.10.Final'
 
     // GSON
     embed 'com.google.code.gson:gson:2.10.1'
@@ -40,6 +38,9 @@ dependencies {
 
     // MongoDB
     embed 'org.mongodb:mongodb-driver-sync:4.11.1'
+
+    // Passwords
+    embed 'org.springframework.security:spring-security-crypto:6.2.1'
 
     // compile embed
     configurations.compileOnly.extendsFrom(configurations.embed)

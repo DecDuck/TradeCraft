@@ -55,7 +55,7 @@ public class AccountLinkManager {
     }
 
     public void cleanup(){
-        Set<String> codes = pendingLinksByCode.keySet();
+        Set<String> codes = new HashSet<>(pendingLinksByCode.keySet());
         codes.forEach(e -> {
             if(pendingLinksByCode.get(e).getExpiry().isBefore(LocalDateTime.now())){
                 pendingLinksByCode.remove(e);

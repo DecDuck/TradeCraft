@@ -14,7 +14,7 @@
       <img :src="'/api/v1/branding/banner'" class="h-12 w-auto" />
       <p class="mt-6 max-w-md text-base text-center leading-7 text-zinc-400">
         To access the Web UI, log into Minecraft and link your account with this
-        session. Use the command /tc authorize [code] to link your account.
+        session. Use the command /authorize [code] to link your account.
       </p>
       <h1
         class="mt-4 text-3xl font-bold tracking-tight text-cyan-200 space-x-4 sm:text-5xl font-mono"
