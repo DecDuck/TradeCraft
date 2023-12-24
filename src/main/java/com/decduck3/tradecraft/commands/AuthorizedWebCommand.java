@@ -44,7 +44,6 @@ public class AuthorizedWebCommand extends @NotNull Command {
                     URI externalUri = providedExternalURL.toURI().resolve("/link#"+link.getCode());
                     TradeCraft.accountLinkManager().linkPlayer(link.getCode(), player.getUniqueId());
 
-
                     player.sendMessage(Component.text("Open this link to sign into the web UI: ").append(Component.text("["+externalUri.getHost()+"...]").clickEvent(ClickEvent.openUrl(externalUri.toURL())).color(TextColor.color(0, 255, 255))));
                     return true;
                 } catch (MalformedURLException | URISyntaxException e) {

@@ -1,8 +1,8 @@
 package com.decduck3.tradecraft.web.handlers;
 
 import com.decduck3.tradecraft.TradeCraft;
+import com.decduck3.tradecraft.db.models.User;
 import com.decduck3.tradecraft.security.AccountLinkManager;
-import com.decduck3.tradecraft.web.Router;
 import com.decduck3.tradecraft.web.session.ArbitraryDataSecurityContext;
 import com.decduck3.tradecraft.web.session.SessionStorage;
 import com.decduck3.tradecraft.web.session.storages.MemorySessionStorage;
@@ -14,7 +14,12 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
 import io.undertow.util.HttpString;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class AuthenticationHandler implements HttpHandler {
     private record AuthFetchUser (String name, String uuid){}
@@ -45,18 +50,25 @@ public class AuthenticationHandler implements HttpHandler {
         Handlers.routing()
                 // User self-fetch
                 .add("GET", "/fetch", exchange -> {
-                    String playerUUID = storage.fetch(sessionToken, "playerUUID");
-                    if(playerUUID == null){
+                    String userID = storage.fetch(sessionToken, "userID");
+                    if(userID == null){
                         exchange.setStatusCode(403);
                         exchange.getResponseSender().close();
                         return;
                     }
-                    OfflinePlayer player = TradeCraft.singleton().getServer().getOfflinePlayer(playerUUID);
-                    AuthFetchUser user = new AuthFetchUser(player.getName(), playerUUID);
+
+                    User user = User.findUser(userID);
+                    if(user == null){
+                        exchange.setStatusCode(403);
+                        exchange.getResponseSender().close();
+                        return;
+                    }
+
+                    AuthFetchUser returnUser = new AuthFetchUser(user.getCUsername(), user.getPlayerUUID());
                     Gson gson = new Gson();
 
                     exchange.getResponseHeaders().add(HttpString.tryFromString("Content-Type"), "application/json");
-                    exchange.getResponseSender().send(gson.toJson(user));
+                    exchange.getResponseSender().send(gson.toJson(returnUser));
                 })
                 .add("GET", "/link/begin", exchange -> {
                     AccountLinkManager.PendingAccountLink link = TradeCraft.accountLinkManager().generate();
@@ -73,7 +85,18 @@ public class AuthenticationHandler implements HttpHandler {
                                 exchange.getResponseSender().close();
                                 return;
                             }
-                            storage.save(sessionToken, "playerUUID", link.getUuid().toString());
+
+                            // Find user, otherwise create one
+                            String playerUUID = link.getUuid().toString();
+                            Player onlinePlayer = TradeCraft.singleton().getServer().getPlayer(UUID.fromString(playerUUID));
+                            User user = User.findOrInitialiseUser(playerUUID, onlinePlayer);
+
+                            // Send a message to a player if they're online
+                            if(onlinePlayer != null){
+                                onlinePlayer.sendMessage(Component.text("Successfully linked your accounts!").color(TextColor.color(0, 255, 0)));
+                            }
+
+                            storage.save(sessionToken, "userID", user.getId().toString());
                             exchange.setStatusCode(200);
                             exchange.getResponseSender().close();
                         }

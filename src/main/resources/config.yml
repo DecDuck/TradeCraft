@@ -3,10 +3,7 @@ network:
   port: 3000
   # Optional, enables the use of generating a link url with /authorize
   externalUrl:
-db:
-  url: "sqlite://file:tradecraft.db"
-  username: ""
-  password: ""
+db: "mongodb://127.0.0.1:27017/tradecraft"
 session:
   # Session controller, use 'memory' for a single-instance server
   type: "memory"

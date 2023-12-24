@@ -1,9 +1,5 @@
-<template>
-  <h1>Index</h1>
-</template>
+<template></template>
 
 <script setup lang="ts">
-useHead({
-  title: "Dashboard"
-});
+useRouter().replace('/dashboard');
 </script>

@@ -1,6 +1,7 @@
 package com.decduck3.tradecraft;
 
 import com.decduck3.tradecraft.commands.AuthorizedWebCommand;
+import com.decduck3.tradecraft.db.DatabaseManager;
 import com.decduck3.tradecraft.security.AccountLinkManager;
 import com.decduck3.tradecraft.utils.AssetUnpacker;
 import com.decduck3.tradecraft.web.WebServer;
@@ -16,17 +17,19 @@ public final class TradeCraft extends JavaPlugin {
     private WebServer webServer;
     private static Logger logger;
     private static FileConfiguration configuration;
-    private static AssetUnpacker assetUnpacker;
     private static File dataFolder;
-    private static AccountLinkManager accountLinkManager;
 
+
+    private static AssetUnpacker assetUnpacker;
+    private static AccountLinkManager accountLinkManager;
+    private static DatabaseManager databaseManager;
     private static TradeCraft singleton;
 
     public TradeCraft() {
+        singleton = this;
         logger = this.getLogger();
         dataFolder = getDataFolder();
         assetUnpacker = new AssetUnpacker(getServer());
-        singleton = this;
         accountLinkManager = new AccountLinkManager();
     }
 
@@ -37,11 +40,16 @@ public final class TradeCraft extends JavaPlugin {
 
         configuration = getConfig();
 
-        // Start unpacking
-        assetUnpacker.prepareUnpack();
+        // Initialise database
+        databaseManager = new DatabaseManager();
 
         // Start web server after config loading
         webServer = new WebServer();
+
+        // At this point, we're technically up for business
+
+        // Start unpacking
+        assetUnpacker.prepareUnpack();
 
         // Start account link manager cleanup
         new BukkitRunnable(){
@@ -61,6 +69,7 @@ public final class TradeCraft extends JavaPlugin {
         if (webServer != null) {
             webServer.destroy();
         }
+        databaseManager.close();
     }
 
     @NotNull
@@ -87,4 +96,6 @@ public final class TradeCraft extends JavaPlugin {
     public static AccountLinkManager accountLinkManager() {
         return accountLinkManager;
     }
+
+    public static DatabaseManager database() {return databaseManager;}
 }

@@ -53,7 +53,7 @@
               </TransitionChild>
               <!-- Sidebar component, swap this element with another sidebar if you like -->
               <div
-                class="flex grow flex-col gap-y-5 overflow-y-auto bg-zinc-900 px-6 pb-2 ring-1 ring-cyan-200"
+                class="flex grow flex-col gap-y-5 overflow-y-auto bg-zinc-900 px-6 pb-2 ring-2 ring-cyan-300"
               >
                 <div class="flex h-16 shrink-0 items-center justify-center">
                   <img
@@ -66,11 +66,11 @@
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
-                        <li v-for="item in navigation" :key="item.name">
-                          <a
+                        <li v-for="(item, itemIdx) in navigation" :key="item.name">
+                          <NuxtLink
                             :href="item.href"
                             :class="[
-                              item.current
+                              itemIdx == activeIndex
                                 ? 'bg-zinc-800 text-cyan-200'
                                 : 'text-zinc-400 hover:text-white hover:bg-zinc-800',
                               'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
@@ -82,7 +82,7 @@
                               aria-hidden="true"
                             />
                             {{ item.name }}
-                          </a>
+                          </NuxtLink>
                         </li>
                       </ul>
                     </li>
@@ -90,14 +90,14 @@
                       <div
                         class="text-xs font-semibold leading-6 text-zinc-400"
                       >
-                        Your teams
+                        Bookmarks
                       </div>
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
-                        <li v-for="team in teams" :key="team.name">
-                          <a
-                            :href="team.href"
+                        <li v-for="bookmark in bookmarks" :key="bookmark.name">
+                          <NuxtLink
+                            :href="bookmark.href"
                             :class="[
-                              team.current
+                              bookmark.current
                                 ? 'bg-zinc-800 text-white'
                                 : 'text-zinc-400 hover:text-white hover:bg-zinc-800',
                               'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
@@ -105,10 +105,10 @@
                           >
                             <span
                               class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-[0.625rem] font-medium text-zinc-400 group-hover:text-white"
-                              >{{ team.initial }}</span
+                              >{{ bookmark.name[0].toUpperCase() }}</span
                             >
-                            <span class="truncate">{{ team.name }}</span>
-                          </a>
+                            <span class="truncate">{{ bookmark.name }}</span>
+                          </NuxtLink>
                         </li>
                       </ul>
                     </li>
@@ -126,7 +126,9 @@
       class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col"
     >
       <!-- Sidebar component, swap this element with another sidebar if you like -->
-      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-zinc-900 px-6 shadow-lg shadow-cyan-200">
+      <div
+        class="flex grow flex-col gap-y-5 overflow-y-auto bg-zinc-900 px-6 border-r-2 border-cyan-300"
+      >
         <div class="flex h-16 shrink-0 items-center justify-center">
           <img
             class="h-8 w-auto"
@@ -138,11 +140,11 @@
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
-                <li v-for="item in navigation" :key="item.name">
-                  <a
+                <li v-for="(item, itemIdx) in navigation" :key="item.name">
+                  <NuxtLink
                     :href="item.href"
                     :class="[
-                      item.current
+                      itemIdx == activeIndex
                         ? 'bg-zinc-800 text-cyan-200'
                         : 'text-zinc-400 hover:text-white hover:bg-zinc-800',
                       'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
@@ -154,20 +156,20 @@
                       aria-hidden="true"
                     />
                     {{ item.name }}
-                  </a>
+                  </NuxtLink>
                 </li>
               </ul>
             </li>
             <li>
               <div class="text-xs font-semibold leading-6 text-zinc-400">
-                Your teams
+                Bookmarks
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
-                <li v-for="team in teams" :key="team.name">
-                  <a
-                    :href="team.href"
+                <li v-for="bookmark in bookmarks" :key="bookmark.name">
+                  <NuxtLink
+                    :href="bookmark.href"
                     :class="[
-                      team.current
+                      bookmark.current
                         ? 'bg-zinc-800 text-white'
                         : 'text-zinc-400 hover:text-white hover:bg-zinc-800',
                       'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
@@ -175,10 +177,10 @@
                   >
                     <span
                       class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-[0.625rem] font-medium text-zinc-400 group-hover:text-white"
-                      >{{ team.initial }}</span
+                      >{{ bookmark.name[0].toUpperCase() }}</span
                     >
-                    <span class="truncate">{{ team.name }}</span>
-                  </a>
+                    <span class="truncate">{{ bookmark.name }}</span>
+                  </NuxtLink>
                 </li>
               </ul>
             </li>
@@ -189,11 +191,11 @@
               >
                 <img
                   class="h-8 w-8 rounded-full bg-zinc-800"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  :src="profilePictureURL"
                   alt=""
                 />
                 <span class="sr-only">Your profile</span>
-                <span aria-hidden="true">{{user.name}}</span>
+                <span aria-hidden="true">{{ user.name }}</span>
               </a>
             </li>
           </ul>
@@ -219,14 +221,14 @@
         <span class="sr-only">Your profile</span>
         <img
           class="h-8 w-8 rounded-full bg-zinc-800"
-          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+          :src="profilePictureURL"
           alt=""
         />
       </a>
     </div>
 
     <main class="lg:pl-72 flex flex-col items-center">
-        <slot />
+      <slot />
     </main>
   </div>
 </template>
@@ -241,40 +243,44 @@ import {
 } from "@headlessui/vue";
 import {
   Bars3Icon,
-  CalendarIcon,
+  BuildingOffice2Icon,
+  BuildingStorefrontIcon,
   ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
+  CurrencyDollarIcon,
   HomeIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline";
-import type { TradeCraftUser } from "~/types/user";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
+  { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
+  { name: "Market", href: "/market", icon: BuildingStorefrontIcon },
+  { name: "Sell", href: "/sell", icon: CurrencyDollarIcon },
+  { name: "Companies", href: "/companies", icon: BuildingOffice2Icon },
+  { name: "Assets", href: "/assets", icon: ChartPieIcon },
 ];
-const teams = [
-  { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
+const bookmarks = [
+  { id: 1, name: "DecDuck's General Goods", href: "#", current: false },
+  { id: 2, name: "Globe Foundation", href: "#", current: false },
+  { id: 3, name: "Ark", href: "#", current: false },
 ];
 
 const sidebarOpen = ref(false);
 
 const user = useUser();
 const router = useRouter();
+const route = useRoute();
 
-$fetch('/api/v1/auth/fetch')
-.then((e) => {
-  user.value = e as TradeCraftUser;
+try {
+  user.value = await $fetch("/api/v1/auth/fetch");
+} catch (e) {
+  router.push("/link");
+}
+
+router.afterEach(() => {
+  sidebarOpen.value = false;
 })
-.catch(() => {
- router.push('/link');
-})
+
+const profilePictureURL = computed(() => `https://visage.surgeplay.com/bust/${user.value?.uuid}`);
+
+const activeIndex = computed(() => navigation.findIndex((e) => route.path.startsWith(e.href)));
 </script>
