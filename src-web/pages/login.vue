@@ -146,4 +146,8 @@ function login() {
 definePageMeta({
   layout: false,
 });
+
+useHead({
+  title: "Sign in"
+})
 </script>

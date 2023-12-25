@@ -260,7 +260,7 @@ import {
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
-  { name: "Marketplace", href: "/market", icon: BuildingStorefrontIcon },
+  { name: "Marketplace", href: "/marketplace", icon: BuildingStorefrontIcon },
   { name: "Sell", href: "/sell", icon: CurrencyDollarIcon },
   { name: "Companies", href: "/companies", icon: BuildingOffice2Icon },
   { name: "Assets", href: "/assets", icon: ChartPieIcon },
