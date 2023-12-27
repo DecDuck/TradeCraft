@@ -170,31 +170,28 @@ public class AuthenticationHandler implements HttpHandler {
                     exchange.getResponseSender().send(link.getCode());
                 })
                 .add("POST", "/link/finish", exchange -> {
-                    exchange.getRequestReceiver().receiveFullString(new Receiver.FullStringCallback() {
-                        @Override
-                        public void handle(HttpServerExchange h, String s) {
-                            AccountLinkManager.PendingAccountLink link = TradeCraft.accountLinkManager().collect(s);
-                            if (link == null) {
-                                exchange.setStatusCode(400);
-                                exchange.getResponseSender().send("Code expired or not activated. Please refresh the page and try again.");
-                                exchange.getResponseSender().close();
-                                return;
-                            }
-
-                            // Find user, otherwise create one
-                            String playerUUID = link.getUuid().toString();
-                            Player onlinePlayer = TradeCraft.singleton().getServer().getPlayer(UUID.fromString(playerUUID));
-                            User user = User.findOrInitialiseUser(playerUUID, onlinePlayer);
-
-                            // Send a message to a player if they're online
-                            if (onlinePlayer != null) {
-                                onlinePlayer.sendMessage(Component.text("Successfully linked your accounts!").color(TextColor.color(0, 255, 0)));
-                            }
-
-                            storage.save(sessionToken, "userID", user.getId().toString());
-                            exchange.setStatusCode(200);
+                    exchange.getRequestReceiver().receiveFullString((h, s) -> {
+                        AccountLinkManager.PendingAccountLink link = TradeCraft.accountLinkManager().collect(s);
+                        if (link == null) {
+                            exchange.setStatusCode(400);
+                            exchange.getResponseSender().send("Code expired or not activated. Please refresh the page and try again.");
                             exchange.getResponseSender().close();
+                            return;
                         }
+
+                        // Find user, otherwise create one
+                        String playerUUID = link.getUuid().toString();
+                        Player onlinePlayer = TradeCraft.singleton().getServer().getPlayer(UUID.fromString(playerUUID));
+                        User user = User.findOrInitialiseUser(playerUUID, onlinePlayer);
+
+                        // Send a message to a player if they're online
+                        if (onlinePlayer != null) {
+                            onlinePlayer.sendMessage(Component.text("Successfully linked your accounts!").color(TextColor.color(0, 255, 0)));
+                        }
+
+                        storage.save(sessionToken, "userID", user.getId().toString());
+                        exchange.setStatusCode(200);
+                        exchange.getResponseSender().close();
                     });
                 })
                 // 404 handler
@@ -226,7 +223,7 @@ public class AuthenticationHandler implements HttpHandler {
         }
     }
 
-    private User requireUser(HttpServerExchange exchange, String sessionToken) {
+    public User requireUser(HttpServerExchange exchange, String sessionToken) {
         String userID = storage.fetch(sessionToken, "userID");
         if (userID == null) {
             exchange.setStatusCode(403);

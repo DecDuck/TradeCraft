@@ -1,17 +1,14 @@
 package com.decduck3.tradecraft.inventory;
 
+import com.decduck3.tradecraft.TradeCraft;
 import com.decduck3.tradecraft.db.models.VirtualInventoryBack;
-import org.bson.types.ObjectId;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,67 +16,97 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.decduck3.tradecraft.utils.SuperList.superlist;
 
 public class VirtualPlayerInventory implements PlayerInventory {
     private final VirtualInventoryBack db;
     private final OfflinePlayer player;
 
-    private VirtualPlayerInventory(VirtualInventoryBack db, OfflinePlayer player) {
+    // Just a raw create
+    public VirtualPlayerInventory(VirtualInventoryBack db, OfflinePlayer player) {
         this.db = db;
         this.player = player;
     }
 
-    public VirtualPlayerInventory(OfflinePlayer player, VirtualInventoryBack entry) {
+    // Loads player inventory from backer
+    public VirtualPlayerInventory(OfflinePlayer player, VirtualInventoryBack back) {
+        this.db = back;
+
         Player onlinePlayer = player.getPlayer();
-        if(onlinePlayer != null){
+        if (onlinePlayer != null) {
+            TradeCraft.logger().info("Loading virtual inventory in player's inventory");
             // Load inventory database into player
-            PlayerInventory inventory = onlinePlayer.getInventory();
-            inventory.setArmorContents(this.getArmorContents());
-            inventory.setContents(this.getContents());
-            inventory.setExtraContents(this.getExtraContents());
+            PlayerInventory playerInventory = onlinePlayer.getInventory();
+            playerInventory.setArmorContents(this.getArmorContents());
+            playerInventory.setStorageContents(this.getStorageContents());
+            // playerInventory.setExtraContents(this.getExtraContents());
+            onlinePlayer.updateInventory();
         }
 
         this.player = player;
-        this.db = entry;
     }
 
-    public void syncEntry(){
+    // Create from alternative archive
+    public VirtualPlayerInventory(OfflinePlayer player, VirtualInventoryBack back, ItemStack[] armor, ItemStack[] extra, ItemStack[] contents){
+        this.player = player;
+        this.db = back;
+        db.setArmor(Arrays.stream(armor).toList());
+        db.setExtra(Arrays.stream(extra).toList());
+        db.setInventory(Arrays.stream(contents).toList());
+    }
+
+    public void syncBacker() {
         // Load player inventory into db
         Player onlinePlayer = this.player.getPlayer();
-        if(onlinePlayer == null){
+        if (onlinePlayer == null) {
             throw new RuntimeException("Cannot sync db entry when player is offline!");
         }
         PlayerInventory inventory = onlinePlayer.getInventory();
-        db.setArmor(Arrays.stream(inventory.getArmorContents()).map(e -> (VirtualItemStack) e).toList());
-        db.setInventory(Arrays.stream(inventory.getContents()).map(e -> (VirtualItemStack) e).toList());
-        db.setExtra(Arrays.stream(inventory.getExtraContents()).map(e -> (VirtualItemStack) e).toList());
+        db.setArmor(Arrays.stream(inventory.getArmorContents()).toList());
+        db.setInventory(Arrays.stream(inventory.getStorageContents()).toList());
+        db.setExtra(Arrays.stream(inventory.getExtraContents()).toList());
     }
 
-    public static VirtualPlayerInventory createNew(Player player){
+    public static VirtualPlayerInventory createNew(Player player) {
         VirtualInventoryBack db = new VirtualInventoryBack();
         PlayerInventory inventory = player.getInventory();
-        db.setArmor(Arrays.stream(inventory.getArmorContents()).map(e -> (VirtualItemStack) e).toList());
-        db.setInventory(Arrays.stream(inventory.getContents()).map(e -> (VirtualItemStack) e).toList());
-        db.setExtra(Arrays.stream(inventory.getExtraContents()).map(e -> (VirtualItemStack) e).toList());
+        db.setPlayerUUID(player.getUniqueId().toString());
+        db.setArmor(Arrays.stream(inventory.getArmorContents()).toList());
+        db.setInventory(Arrays.stream(inventory.getStorageContents()).toList());
+        db.setExtra(Arrays.stream(inventory.getExtraContents()).toList());
 
         return new VirtualPlayerInventory(db, player);
     }
 
-    private <T> T fetchOnlineOffline(Function<Player, T> online, Supplier<T> offline){
+    private <T> T fetchOnlineOffline(Function<Player, T> online, Supplier<T> offline) {
+        if(player == null){
+            return offline.get();
+        }
         Player onlinePlayer = player.getPlayer();
-        if(onlinePlayer == null){
+        if (onlinePlayer == null) {
             return offline.get();
         }
         return online.apply(onlinePlayer);
     }
 
-    private void switchOnlineOffline(Consumer<Player> online, Runnable offline){
+    private void switchOnlineOffline(Consumer<Player> online, Runnable offline) {
+        if(player == null){
+            offline.run();
+            return;
+        }
         Player onlinePlayer = player.getPlayer();
-        if(onlinePlayer == null){
+        if (onlinePlayer == null) {
             offline.run();
             return;
         }
         online.accept(onlinePlayer);
+    }
+
+    public VirtualInventoryBack getDb() {
+        return db;
     }
 
     // Everything from here on out is passthrough
@@ -87,7 +114,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack @NotNull [] getArmorContents() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getArmorContents(),
-                () -> (ItemStack[]) db.getArmor().stream().toArray()
+                () -> db.getArmor().toArray(new ItemStack[0])
         );
     }
 
@@ -95,7 +122,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack @NotNull [] getExtraContents() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getExtraContents(),
-                () -> (ItemStack[]) db.getArmor().stream().toArray()
+                () -> db.getArmor().toArray(new ItemStack[0])
         );
     }
 
@@ -103,7 +130,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack getHelmet() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getHelmet(),
-                () -> db.getArmor().get(0)
+                () -> db.getArmor().get(3)
         );
     }
 
@@ -111,7 +138,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack getChestplate() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getChestplate(),
-                () -> db.getArmor().get(1)
+                () -> db.getArmor().get(2)
         );
     }
 
@@ -119,7 +146,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack getLeggings() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getLeggings(),
-                () -> db.getArmor().get(2)
+                () -> db.getArmor().get(1)
         );
     }
 
@@ -127,7 +154,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public @Nullable ItemStack getBoots() {
         return fetchOnlineOffline(
                 player -> player.getInventory().getBoots(),
-                () -> db.getArmor().get(3)
+                () -> db.getArmor().get(0)
         );
     }
 
@@ -162,7 +189,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
     public void setItem(int i, @Nullable ItemStack itemStack) {
         switchOnlineOffline(
                 player -> player.getInventory().setItem(i, itemStack),
-                () -> db.getInventory().set(i, (VirtualItemStack) itemStack)
+                () -> db.getInventory().set(i, itemStack)
         );
     }
 
@@ -177,15 +204,15 @@ public class VirtualPlayerInventory implements PlayerInventory {
                     }
                     int currentNullIndex = 0;
                     itemLoop:
-                    for(int i = 0; i < itemStacks.length; i++){
-                        while(db.getInventory().get(currentNullIndex) != null){
+                    for (int i = 0; i < itemStacks.length; i++) {
+                        while (db.getInventory().get(currentNullIndex) != null) {
                             currentNullIndex++;
-                            if(currentNullIndex > db.getInventory().size()){
+                            if (currentNullIndex > db.getInventory().size()) {
                                 break itemLoop;
                             }
                         }
                         //currentNullIndex--;
-                        db.getInventory().set(currentNullIndex, (VirtualItemStack) items.get(i));
+                        db.getInventory().set(currentNullIndex, items.get(i));
                         items.remove(i);
                     }
 
@@ -196,107 +223,257 @@ public class VirtualPlayerInventory implements PlayerInventory {
 
     @Override
     public @NotNull HashMap<Integer, ItemStack> removeItem(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
-        return null;
+        return fetchOnlineOffline(
+                player -> player.getInventory().removeItem(itemStacks),
+                () -> {
+                    HashMap<Integer, ItemStack> items = new HashMap<>();
+                    // Loop over inventory once, as the itemStacks array is probably shorter
+                    List<ItemStack> inventory = db.getInventory();
+                    for (int i = 0; i < inventory.size(); i++) {
+                        for (int m = 0; m < itemStacks.length; m++) {
+                            if (inventory.get(i).equals(itemStacks[m])) {
+                                if (itemStacks[m].getAmount() > inventory.get(i).getAmount()) {
+                                    // Remove and add the leftovers to items
+                                    inventory.set(i, null);
+                                    int leftOver = itemStacks[m].getAmount() - inventory.get(i).getAmount();
+                                    ItemStack leftovers = itemStacks[m];
+                                    leftovers.setAmount(leftOver);
+                                    items.put(m, leftovers);
+                                } else if (itemStacks[m].getAmount() == inventory.get(i).getAmount()) {
+                                    // Remove
+                                    inventory.set(i, null);
+                                } else if (itemStacks[m].getAmount() < inventory.get(i).getAmount()) {
+                                    // Subtract
+                                    ItemStack remaining = itemStacks[m];
+                                    remaining.setAmount(inventory.get(i).getAmount() - itemStacks[m].getAmount());
+                                    inventory.set(i, remaining);
+                                } else {
+                                    throw new RuntimeException("Logically not possible to reach here.");
+                                }
+                            }
+                        }
+                    }
+                    db.setInventory(inventory);
+
+                    return items;
+                }
+        );
     }
 
     @Override
     public @NotNull HashMap<Integer, ItemStack> removeItemAnySlot(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
-        return null;
+        return fetchOnlineOffline(
+                player -> player.getInventory().removeItem(itemStacks),
+                () -> {
+                    HashMap<Integer, ItemStack> leftover = this.removeItem(itemStacks);
+
+                    List<ItemStack> armor = db.getArmor();
+                    for (int i = 0; i < 4; i++) {
+                        Set<Integer> keys = leftover.keySet();
+                        for (Integer key : keys) {
+                            if (armor.get(i).equals(leftover.get(key))) {
+                                ItemStack item = leftover.get(key);
+                                if (item.getAmount() > armor.get(i).getAmount()) {
+                                    // Remove and add the leftovers to items
+                                    armor.set(i, null);
+                                    int leftOver = item.getAmount() - armor.get(i).getAmount();
+                                    item.setAmount(leftOver);
+                                    leftover.put(key, item);
+                                } else if (item.getAmount() == armor.get(i).getAmount()) {
+                                    // Remove
+                                    armor.set(i, null);
+                                    leftover.remove(key);
+                                } else if (item.getAmount() < armor.get(i).getAmount()) {
+                                    // Subtract
+                                    item.setAmount(armor.get(i).getAmount() - item.getAmount());
+                                    armor.set(i, item);
+                                    leftover.put(key, item);
+                                } else {
+                                    throw new RuntimeException("Logically not possible to reach here.");
+                                }
+                            }
+                        }
+                    }
+                    db.setArmor(armor);
+
+                    // TODO do it for extra item (not strictly needed)
+                    return leftover;
+                }
+        );
     }
 
     @Override
     public @Nullable ItemStack @NotNull [] getContents() {
-        return new ItemStack[0];
+        return fetchOnlineOffline(
+                player -> player.getInventory().getContents(),
+                () -> superlist(db.getInventory(), db.getArmor()).toArray(new ItemStack[0])
+        );
     }
 
     @Override
     public void setContents(@Nullable ItemStack @NotNull [] itemStacks) throws IllegalArgumentException {
-
+        switchOnlineOffline(
+                player -> player.getInventory().setContents(itemStacks),
+                () -> db.setInventory(Arrays.stream(itemStacks).toList())
+        );
     }
 
     @Override
     public @Nullable ItemStack @NotNull [] getStorageContents() {
-        return new ItemStack[0];
+        return fetchOnlineOffline(
+                player -> player.getInventory().getStorageContents(),
+                () -> db.getInventory().toArray(new ItemStack[0])
+        );
     }
 
     @Override
     public void setStorageContents(@Nullable ItemStack @NotNull [] itemStacks) throws IllegalArgumentException {
-
+        switchOnlineOffline(
+                player -> player.getInventory().setStorageContents(itemStacks),
+                () -> db.setInventory(Arrays.stream(itemStacks).toList())
+        );
     }
 
     @Override
     public boolean contains(@NotNull Material material) throws IllegalArgumentException {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().contains(material),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().anyMatch(e -> e.getType().equals(material))
+        );
     }
 
     @Override
     public boolean contains(@Nullable ItemStack itemStack) {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().contains(itemStack),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().anyMatch(e -> e.equals(itemStack))
+        );
     }
 
     @Override
     public boolean contains(@NotNull Material material, int i) throws IllegalArgumentException {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().contains(material),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().anyMatch(e -> e.getType().equals(material) && e.getAmount() == i)
+        );
     }
 
     @Override
     public boolean contains(@Nullable ItemStack itemStack, int i) {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().contains(itemStack),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().anyMatch(e -> e.isSimilar(itemStack) && e.getAmount() == i)
+        );
     }
 
     @Override
     public boolean containsAtLeast(@Nullable ItemStack itemStack, int i) {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().containsAtLeast(itemStack, i),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().anyMatch(e -> e.isSimilar(itemStack) && e.getAmount() > i)
+        );
     }
 
     @Override
     public @NotNull HashMap<Integer, ? extends ItemStack> all(@NotNull Material material) throws IllegalArgumentException {
-        return null;
+        return fetchOnlineOffline(
+                player -> player.getInventory().all(material),
+                () -> {
+                    List<ItemStack> combined = superlist(db.getInventory(), db.getArmor());
+                    return (HashMap<Integer, ? extends ItemStack>) IntStream.range(0, combined.size())
+                            .mapToObj(e -> new AbstractMap.SimpleEntry<>(e, combined.get(e)))
+                            .filter(e -> e.getValue().getType().equals(material))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                }
+        );
     }
 
     @Override
     public @NotNull HashMap<Integer, ? extends ItemStack> all(@Nullable ItemStack itemStack) {
-        return null;
+        return fetchOnlineOffline(
+                player -> player.getInventory().all(itemStack),
+                () -> {
+                    List<ItemStack> combined = superlist(db.getInventory(), db.getArmor());
+                    return (HashMap<Integer, ? extends ItemStack>) IntStream.range(0, combined.size())
+                            .mapToObj(e -> new AbstractMap.SimpleEntry<>(e, combined.get(e)))
+                            .filter(e -> e.getValue().isSimilar(itemStack))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                }
+        );
     }
 
     @Override
     public int first(@NotNull Material material) throws IllegalArgumentException {
-        return 0;
+        return fetchOnlineOffline(
+                player -> player.getInventory().first(material),
+                () -> IntStream.range(0, db.getInventory().size())
+                        .filter(e -> db.getInventory().get(e).getType().equals(material))
+                        .findFirst()
+                        .orElseThrow(IllegalArgumentException::new)
+        );
     }
 
     @Override
     public int first(@NotNull ItemStack itemStack) {
-        return 0;
+        return fetchOnlineOffline(
+                player -> player.getInventory().first(itemStack),
+                () -> IntStream.range(0, db.getInventory().size())
+                        .filter(e -> db.getInventory().get(e).equals(itemStack))
+                        .findFirst()
+                        .orElseThrow(IllegalArgumentException::new)
+        );
     }
 
     @Override
     public int firstEmpty() {
-        return 0;
+        return fetchOnlineOffline(
+                player -> player.getInventory().firstEmpty(),
+                () -> IntStream.range(0, db.getInventory().size())
+                        .filter(e -> db.getInventory().get(e) == null || db.getInventory().get(e).isEmpty())
+                        .findFirst().orElse(-1)
+        );
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return fetchOnlineOffline(
+                player -> player.getInventory().isEmpty(),
+                () -> superlist(db.getInventory(), db.getArmor()).stream().filter(e -> !(e == null || e.isEmpty())).toList().isEmpty()
+        );
     }
 
     @Override
     public void remove(@NotNull Material material) throws IllegalArgumentException {
+        switchOnlineOffline(
+                player -> player.getInventory().remove(material),
+                () -> {
 
+                }
+        );
     }
 
     @Override
     public void remove(@NotNull ItemStack itemStack) {
-
+        switchOnlineOffline(
+                player -> player.getInventory().remove(itemStack),
+                () -> {}
+        );
     }
 
     @Override
     public void clear(int i) {
-
+        switchOnlineOffline(
+                player -> player.getInventory().clear(i),
+                () -> db.getInventory().set(i, null)
+        );
     }
 
     @Override
     public void clear() {
-
+        switchOnlineOffline(
+                player -> player.getInventory().clear(),
+                () -> db.setInventory(Arrays.asList(new ItemStack[db.getInventory().size()]))
+        );
     }
 
     @Override
@@ -311,7 +488,7 @@ public class VirtualPlayerInventory implements PlayerInventory {
 
     @Override
     public @NotNull InventoryType getType() {
-        return null;
+        return InventoryType.PLAYER;
     }
 
     @Override

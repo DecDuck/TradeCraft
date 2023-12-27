@@ -1,6 +1,5 @@
 package com.decduck3.tradecraft.db.models;
 
-import com.decduck3.tradecraft.inventory.VirtualItemStack;
 import org.bson.types.ObjectId;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,7 +15,7 @@ public class Listing {
     private double[] bulkMultipliers;
 
     // Item information
-    private VirtualItemStack item;
+    private ItemStack item;
 
     public ObjectId getId() {
         return id;
@@ -58,11 +57,11 @@ public class Listing {
         this.bulkMultipliers = bulkMultipliers;
     }
 
-    public VirtualItemStack getItem() {
+    public ItemStack getItem() {
         return item;
     }
 
-    public void setItem(VirtualItemStack item) {
+    public void setItem(ItemStack item) {
         this.item = item;
     }
 }

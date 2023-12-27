@@ -2,6 +2,7 @@ package com.decduck3.tradecraft;
 
 import com.decduck3.tradecraft.commands.AuthorizedWebCommand;
 import com.decduck3.tradecraft.db.DatabaseManager;
+import com.decduck3.tradecraft.inventory.VirtualInventoryListener;
 import com.decduck3.tradecraft.security.AccountLinkManager;
 import com.decduck3.tradecraft.utils.AssetUnpacker;
 import com.decduck3.tradecraft.web.WebServer;
@@ -42,6 +43,9 @@ public final class TradeCraft extends JavaPlugin {
 
         // Initialise database
         databaseManager = new DatabaseManager();
+
+        // Setup listener
+        getServer().getPluginManager().registerEvents(new VirtualInventoryListener(), this);
 
         // Start web server after config loading
         webServer = new WebServer();

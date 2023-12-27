@@ -3,11 +3,14 @@ package com.decduck3.tradecraft.db;
 import com.decduck3.tradecraft.TradeCraft;
 import com.decduck3.tradecraft.db.models.Listing;
 import com.decduck3.tradecraft.db.models.User;
-import com.decduck3.tradecraft.db.pojos.VirtualItemStackCodec;
+import com.decduck3.tradecraft.db.models.VirtualInventoryBack;
+import com.decduck3.tradecraft.db.pojos.ItemStackCodec;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.*;
+import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.Objects;
 
@@ -22,6 +25,7 @@ public class DatabaseManager {
     // Collection references
     private final MongoCollection<User> users;
     private final MongoCollection<Listing> listings;
+    private final MongoCollection<VirtualInventoryBack> virtualInventories;
 
     public DatabaseManager() {
         String uri = TradeCraft.config().getString("db");
@@ -30,17 +34,20 @@ public class DatabaseManager {
         }
 
         // POJOs setup
-
+        CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(
-                CodecRegistries.fromCodecs(new VirtualItemStackCodec()),
-                getDefaultCodecRegistry()
+                CodecRegistries.fromCodecs(new ItemStackCodec()),
+                getDefaultCodecRegistry(),
+                fromProviders(pojoCodecProvider)
         );
 
         String databaseName = Objects.requireNonNullElse(new ConnectionString(uri).getDatabase(), "tradecraft");
         client = MongoClients.create(uri);
         database = client.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+
         users = database.getCollection("users", User.class);
         listings = database.getCollection("listings", Listing.class);
+        virtualInventories = database.getCollection("vinv", VirtualInventoryBack.class);
 
         TradeCraft.logger().info("Connected to database");
     }
@@ -55,5 +62,13 @@ public class DatabaseManager {
 
     public MongoCollection<User> getUsers() {
         return users;
+    }
+
+    public MongoCollection<Listing> getListings() {
+        return listings;
+    }
+
+    public MongoCollection<VirtualInventoryBack> getVirtualInventories() {
+        return virtualInventories;
     }
 }
