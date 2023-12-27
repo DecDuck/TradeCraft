@@ -51,7 +51,6 @@ public class AuthorizedWebCommand extends @NotNull Command {
                 }
             }
 
-
             // If we haven't returned by now, they don't have enough arguments
             player.sendMessage("Please provide a link code (like this: /authorize [code]).");
             return false;

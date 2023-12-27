@@ -61,6 +61,8 @@ public final class TradeCraft extends JavaPlugin {
 
         // Register authorize command
         getServer().getCommandMap().register("authorize", "tc", new AuthorizedWebCommand());
+
+
     }
 
     @Override
