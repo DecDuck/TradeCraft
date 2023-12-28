@@ -1,24 +1,33 @@
 package com.decduck3.tradecraft.db.models;
 
+import com.decduck3.tradecraft.TradeCraft;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class Listing {
     private ObjectId id;
+    // Meta
+    private Date createdAt;
     // Visual stuff
     private String description;
-    private List<Map<String, String>> features;
+    private Map<String, List<String>> features;
+    private List<String> pictureTransforms;
 
     // Single unit costing information
     private int centsPerUnit;
     private int available;
 
     // Bulk billing information
-    private int[] bulkBreakpoints;
-    private double[] bulkMultipliers;
+    private List<Integer> bulkBreakpoints;
+    private List<Double> bulkMultipliers;
 
     // Item information
     private List<ItemStack> items;
@@ -27,12 +36,37 @@ public class Listing {
     // Sale information
     private double saleMultipler;
 
+    public static Listing findListing(String objectID){
+        List<Listing> listings = new ArrayList<>();
+        TradeCraft.database().getListings().find(eq("_id", new ObjectId(objectID))).into(listings);
+        if(listings.size() != 1){
+            return null;
+        }
+        return listings.get(0);
+    }
+
     public ObjectId getId() {
         return id;
     }
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<String> getPictureTransforms() {
+        return pictureTransforms;
+    }
+
+    public void setPictureTransforms(List<String> pictureTransforms) {
+        this.pictureTransforms = pictureTransforms;
     }
 
     public String getDescription() {
@@ -43,11 +77,11 @@ public class Listing {
         this.description = description;
     }
 
-    public List<Map<String, String>> getFeatures() {
+    public Map<String, List<String>> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<Map<String, String>> features) {
+    public void setFeatures(Map<String, List<String>> features) {
         this.features = features;
     }
 
@@ -67,19 +101,19 @@ public class Listing {
         this.available = available;
     }
 
-    public int[] getBulkBreakpoints() {
+    public List<Integer> getBulkBreakpoints() {
         return bulkBreakpoints;
     }
 
-    public void setBulkBreakpoints(int[] bulkBreakpoints) {
+    public void setBulkBreakpoints(List<Integer> bulkBreakpoints) {
         this.bulkBreakpoints = bulkBreakpoints;
     }
 
-    public double[] getBulkMultipliers() {
+    public List<Double> getBulkMultipliers() {
         return bulkMultipliers;
     }
 
-    public void setBulkMultipliers(double[] bulkMultipliers) {
+    public void setBulkMultipliers(List<Double> bulkMultipliers) {
         this.bulkMultipliers = bulkMultipliers;
     }
 

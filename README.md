@@ -9,4 +9,10 @@ TradeCraft implements the Vault API, meaning it seamlessly connects with your pr
 TradeCraft includes a beautiful, reactive web UI that's bundled with an API. The web UI, while not *strictly* required, is highly recommended as many of the options within the web UI are far easier to understand and modify.
 
 ## Customisable & Scalable
-TradeCraft, as well as implementing standard APIs, also includes are variety customisation methods. From Redis session servers to a variety of SQL database options, TradeCraft can be run on anything, from a small SMP to a large multi-server deployment. 
+TradeCraft, as well as implementing standard APIs, also includes are variety customisation methods. From Redis session servers to a variety of SQL database options, TradeCraft can be run on anything, from a small SMP to a large multi-server deployment.
+
+# Showcase
+![](docs/showcase/anvil_store.png)
+![](docs/showcase/link.png)
+![](docs/showcase/login.png)
+![](docs/showcase/menu_screen.png)

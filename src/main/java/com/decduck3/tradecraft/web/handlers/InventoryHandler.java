@@ -5,7 +5,6 @@ import com.decduck3.tradecraft.db.models.User;
 import com.decduck3.tradecraft.db.models.VirtualInventoryBack;
 import com.decduck3.tradecraft.inventory.VirtualPlayerInventory;
 import com.decduck3.tradecraft.web.Router;
-import com.decduck3.tradecraft.web.data.WebItemStack;
 import com.decduck3.tradecraft.web.session.ArbitraryDataSecurityContext;
 import com.google.gson.Gson;
 import io.undertow.Handlers;
@@ -36,7 +35,6 @@ public class InventoryHandler implements HttpHandler {
                     }
 
                     Gson gson = new Gson();
-                    exchange.getResponseSender().send(gson.toJson(Arrays.stream(inventory.getStorageContents()).map(WebItemStack::new).toList()));
                     exchange.getResponseSender().close();
                 })
                 .add("POST", "/clear", exchange -> {

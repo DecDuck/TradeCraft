@@ -1,5 +1,5 @@
 <template>
-
+    <RecentProducts />
 </template>
 
 <script setup lang="ts">

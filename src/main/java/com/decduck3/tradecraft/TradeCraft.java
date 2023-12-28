@@ -7,6 +7,7 @@ import com.decduck3.tradecraft.security.AccountLinkManager;
 import com.decduck3.tradecraft.utils.AssetUnpacker;
 import com.decduck3.tradecraft.utils.BundledAssetsDownloader;
 import com.decduck3.tradecraft.web.WebServer;
+import com.decduck3.tradecraft.web.data.ItemStackSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -51,6 +52,7 @@ public final class TradeCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VirtualInventoryListener(), this);
 
         // Start web server after config loading
+        ItemStackSerializer.init();
         webServer = new WebServer();
 
         // At this point, we're technically up for business

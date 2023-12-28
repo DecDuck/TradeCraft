@@ -106,14 +106,10 @@ public class AssetUnpacker {
                 if(entry.isDirectory()){
                     continue;
                 }
-                if(!entry.getName().startsWith("assets/minecraft/textures")){
+                if(!(entry.getName().startsWith("assets/minecraft/textures") || entry.getName().startsWith("assets/minecraft/lang"))){
                     continue;
                 }
-                // Doesn't really catch anything, but better safe than sorry yk
-                if(!entry.getName().endsWith(".png")){
-                    continue;
-                }
-                File target = new File(localUnpackTarget, entry.getName().substring("assets/minecraft/textures".length()));
+                File target = new File(localUnpackTarget, entry.getName().substring("assets/minecraft".length()));
                 target.getParentFile().mkdirs();
                 target.createNewFile();
                 FileOutputStream output = null;
