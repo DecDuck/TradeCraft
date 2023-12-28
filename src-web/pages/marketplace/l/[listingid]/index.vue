@@ -10,20 +10,23 @@
           <div
             class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none"
           >
-            <TabList class="grid grid-cols-4 gap-6">
+            <TabList
+              v-if="product.images.length > 1"
+              class="grid grid-cols-4 gap-6"
+            >
               <Tab
                 v-for="image in product.images"
                 :key="image.id"
-                class="transition-all relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-zinc-800 text-sm font-medium uppercase text-zinc-900 hover:bg-zinc-700 hover:scale-105"
+                class="transition-all relative flex h-24 cursor-pointer bg-zinc-800 items-center justify-center rounded-md text-sm font-medium uppercase text-zinc-900 hover:bg-zinc-700 hover:scale-105"
                 v-slot="{ selected }"
               >
                 <span class="sr-only">{{ image.name }}</span>
-                <span class="absolute inset-0 overflow-hidden rounded-md">
+                <span class="absolute inset-0 rounded-md overflow-hidden">
                   <img
                     :src="image.src"
                     alt=""
-                    class="h-full w-full object-cover object-center"
-                    :style="`transform: ${image.transform}`"
+                    class="absolute left-1/2 h-full w-auto aspect-1 object-cover object-center bg-zinc-900 rounded-3xl p-2"
+                    :style="`transform: translate(-50%) scale(75%) ${image.transform}`"
                   />
                 </span>
                 <span
@@ -42,8 +45,13 @@
               <img
                 :src="image.src"
                 :alt="image.alt"
-                class="bg-zinc-800 w-full h-full rounded-3xl shadow-xl shadow-zinc-900 object-cover object-center"
-                :style="`transform: ${image.transform} scale(.65);`"
+                :class="[
+                  image.render ? `` : `bg-zinc-800 shadow-xl shadow-zinc-900`,
+                  ' w-full h-full rounded-3xl object-cover object-center',
+                ]"
+                :style="`transform: ${
+                  image.render ? '' : `${image.transform} scale(.65);`
+                }`"
               />
             </TabPanel>
           </TabPanels>
@@ -60,25 +68,6 @@
             <p class="text-3xl tracking-tight text-zinc-100">
               {{ product.price }}
             </p>
-          </div>
-
-          <!-- Reviews -->
-          <div class="mt-3">
-            <h3 class="sr-only">Reviews</h3>
-            <div class="flex items-center">
-              <div class="flex items-center">
-                <StarIcon
-                  v-for="rating in [0, 1, 2, 3, 4]"
-                  :key="rating"
-                  :class="[
-                    product.rating > rating ? 'text-cyan-200' : 'text-zinc-700',
-                    'h-5 w-5 flex-shrink-0',
-                  ]"
-                  aria-hidden="true"
-                />
-              </div>
-              <p class="sr-only">{{ product.rating }} out of 5 stars</p>
-            </div>
           </div>
 
           <div class="mt-6">
@@ -196,8 +185,14 @@ import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 const product = {
   name: "Raw Chicken",
   price: "$99",
-  rating: 5,
   images: [
+    {
+      id: 4,
+      name: "Anvil render",
+      src: "/api/v1/asset/render/beacon.png",
+      transform: "",
+      render: true,
+    },
     {
       id: 1,
       name: "Diamond angle 1",
@@ -219,6 +214,7 @@ const product = {
       alt: "Angled front view with bag zipped and handles upright.",
       transform: "rotate(34deg)",
     },
+
     // More images...
   ],
   vender: {

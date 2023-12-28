@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 
+import static com.decduck3.tradecraft.utils.SecurePath.resolvePath;
+
 public class AssetHandler implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange httpServerExchange) throws Exception {
@@ -25,7 +27,8 @@ public class AssetHandler implements HttpHandler {
         }
 
         String assetPath = httpServerExchange.getRequestPath().substring("/api/v1/asset".length());
-        File assetFile = new File(String.valueOf(Path.of(TradeCraft.unpacker().getUnpackTarget().getAbsolutePath(), TradeCraft.unpacker().getUnpackVersion(), "assets/minecraft/textures", assetPath)));
+        Path assetFilePath = resolvePath(Path.of(TradeCraft.unpacker().getUnpackTarget().getAbsolutePath()), Path.of(TradeCraft.unpacker().getUnpackVersion(), assetPath));
+        File assetFile = new File(String.valueOf(assetFilePath));
         if (!assetFile.exists()) {
             httpServerExchange.setStatusCode(404);
             httpServerExchange.getResponseHeaders().add(HttpString.tryFromString("Content-Type"), "text/plain");

@@ -1,15 +1,13 @@
 package com.decduck3.tradecraft.web;
 
-import com.decduck3.tradecraft.web.handlers.AssetHandler;
-import com.decduck3.tradecraft.web.handlers.AuthenticationHandler;
-import com.decduck3.tradecraft.web.handlers.BrandingHandler;
-import com.decduck3.tradecraft.web.handlers.InventoryHandler;
+import com.decduck3.tradecraft.web.handlers.*;
 import io.undertow.Handlers;
 import io.undertow.server.HttpHandler;
 
 public class Router {
     public static AuthenticationHandler authenticationHandler = new AuthenticationHandler();
     public static InventoryHandler inventoryHandler = new InventoryHandler();
+    public static MarketHandler marketHandler = new MarketHandler();
 
     public static HttpHandler router() {
         return authenticationHandler.getMiddleware(Handlers.path(exchange -> {
@@ -32,7 +30,9 @@ public class Router {
                 )
                 .addPrefixPath("/api/v1/auth",
                         authenticationHandler
-                        // Add auth routes here
+                )
+                .addPrefixPath("/api/v1/market",
+                        marketHandler
                 )
                 .addPrefixPath("/api/v1/inventory",
                         inventoryHandler

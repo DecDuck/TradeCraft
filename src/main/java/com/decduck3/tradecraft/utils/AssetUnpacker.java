@@ -38,7 +38,6 @@ public class AssetUnpacker {
 
     public void prepareUnpack(){
         if(unpackExists()){
-            TradeCraft.logger().info("Skipped unpack - exists");
             UNPACK_READY = true;
             return;
         }
@@ -114,7 +113,7 @@ public class AssetUnpacker {
                 if(!entry.getName().endsWith(".png")){
                     continue;
                 }
-                File target = new File(localUnpackTarget, entry.getName());
+                File target = new File(localUnpackTarget, entry.getName().substring("assets/minecraft/textures".length()));
                 target.getParentFile().mkdirs();
                 target.createNewFile();
                 FileOutputStream output = null;

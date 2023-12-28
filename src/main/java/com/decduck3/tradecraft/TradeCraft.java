@@ -5,6 +5,7 @@ import com.decduck3.tradecraft.db.DatabaseManager;
 import com.decduck3.tradecraft.inventory.VirtualInventoryListener;
 import com.decduck3.tradecraft.security.AccountLinkManager;
 import com.decduck3.tradecraft.utils.AssetUnpacker;
+import com.decduck3.tradecraft.utils.BundledAssetsDownloader;
 import com.decduck3.tradecraft.web.WebServer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +23,7 @@ public final class TradeCraft extends JavaPlugin {
 
 
     private static AssetUnpacker assetUnpacker;
+    private static BundledAssetsDownloader bundledAssetsDownloader;
     private static AccountLinkManager accountLinkManager;
     private static DatabaseManager databaseManager;
     private static TradeCraft singleton;
@@ -31,6 +33,7 @@ public final class TradeCraft extends JavaPlugin {
         logger = this.getLogger();
         dataFolder = getDataFolder();
         assetUnpacker = new AssetUnpacker(getServer());
+        bundledAssetsDownloader = new BundledAssetsDownloader(getServer());
         accountLinkManager = new AccountLinkManager();
     }
 
@@ -54,6 +57,8 @@ public final class TradeCraft extends JavaPlugin {
 
         // Start unpacking
         assetUnpacker.prepareUnpack();
+        // Download bundle
+        bundledAssetsDownloader.prepareBundle();
 
         // Start account link manager cleanup
         new BukkitRunnable(){
