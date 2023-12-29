@@ -27,16 +27,24 @@
           />
         </div>
         <h3 class="mt-4 text-sm text-zinc-300 font-semibold">
-          <NuxtLink :href="`/marketplace/l/${product.id}`">
+          <NuxtLink
+            class="inline-flex gap-x-2 items-center"
+            :href="`/marketplace/l/${product.id}`"
+          >
             <span class="absolute inset-0" />
             {{ product.name }}
+            <div
+              v-if="product.sale"
+              class="hidden lg:block text-sm bg-cyan-200 rounded-full font-semibold text-zinc-900 px-1.5 py-.5"
+            >
+              {{ product.saleAmount }}% off
+            </div>
           </NuxtLink>
         </h3>
-        <p class="mt-1 text-sm text-gray-500">{{ product.color }}</p>
         <p v-if="!product.sale" class="mt-1 text-sm font-medium text-zinc-400">
           ${{ product.centsPerUnit / 100 }}
         </p>
-        <span class="mt-1 inline-flex gap-x-1" v-else>
+        <span class="inline-flex items-center gap-x-1" v-else>
           <p class="text-sm font-bold text-cyan-200">
             ${{ product.finalPrice / 100 }}
           </p>
@@ -44,11 +52,20 @@
             ${{ product.centsPerUnit / 100 }}
           </p>
         </span>
+        <div
+          v-if="product.sale"
+          class="mt-2 w-fit block lg:hidden text-sm bg-cyan-200 rounded-full font-semibold text-zinc-900 px-1.5 py-.5"
+        >
+          {{ product.saleAmount }}% off
+        </div>
       </div>
     </div>
 
     <div class="mt-8 text-sm md:hidden">
-      <NuxtLink :href="props.fullpage" class="font-medium text-cyan-200 hover:text-cyan-300">
+      <NuxtLink
+        :href="props.fullpage"
+        class="font-medium text-cyan-200 hover:text-cyan-300"
+      >
         Shop more
         <span aria-hidden="true"> &rarr;</span>
       </NuxtLink>
@@ -63,10 +80,10 @@ const products = computed(() =>
   props.products.slice(0, 4).map((product: any) => {
     const firstItem = product.items[0];
     product.preview = createAssetUrl(firstItem.key) + "?size=512";
-    product.name = createListingName(product.items);
+    product.name = createListingName(product.items, product.title);
     if (product.saleMultipler != 1) {
       product.sale = true;
-      product.amount = (1 - product.saleMultipler) * 100;
+      product.saleAmount = 100 - product.saleMultipler * 100;
       product.finalPrice = Math.round(
         product.centsPerUnit * product.saleMultipler
       );

@@ -1,13 +1,14 @@
 export interface Listing {
   id: string;
+  title: string;
   createdAt: string;
   description: string;
   features: { [key: string]: string[] };
   pictureTransforms: string[];
   centsPerUnit: number;
   available: number;
-  bulkBreakpoints: number;
-  bulkMultipliers: number;
+  bulkBreakpoints: number[];
+  bulkMultipliers: number[];
   items: ItemStack[];
   vendorID: string;
   saleMultipler: number;

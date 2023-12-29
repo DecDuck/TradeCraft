@@ -103,6 +103,12 @@ public class MarketHandler implements HttpHandler {
                     }
 
                     String id = query.get("id").getFirst();
+                    if(id.length() != 24){
+                        exchange.setStatusCode(400);
+                        exchange.getResponseSender().send("Invalid ID");
+                        exchange.getResponseSender().close();
+                        return;
+                    }
                     Listing listing = Listing.findListing(id);
 
                     if(listing == null){

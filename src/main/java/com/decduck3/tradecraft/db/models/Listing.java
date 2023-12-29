@@ -15,6 +15,7 @@ import static com.mongodb.client.model.Filters.eq;
 public class Listing {
     private ObjectId id;
     // Meta
+    private String title;
     private Date createdAt;
     // Visual stuff
     private String description;
@@ -43,6 +44,14 @@ public class Listing {
             return null;
         }
         return listings.get(0);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public ObjectId getId() {

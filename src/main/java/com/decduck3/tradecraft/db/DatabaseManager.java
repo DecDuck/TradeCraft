@@ -55,21 +55,22 @@ public class DatabaseManager {
         virtualInventories = database.getCollection("vinv", VirtualInventoryBack.class);
         vendors = database.getCollection("vendors", Vendor.class);
 
+
+
+        // Debug Listing
+        /*
         Vendor v = new Vendor();
         ObjectId id = Objects.requireNonNull(vendors.insertOne(v).getInsertedId()).asObjectId().getValue();
 
-
-
-        /*
-        // Debug Listing
         Listing listing = new Listing();
         listing.setCreatedAt(new Date());
+        listing.setTitle("Diamond Sword Bundle");
 
         // Display
-        listing.setDescription("The absolute sexiest Raw Chicken you've ever seen. Check out the fucking awesome promotional pictures we took for this product, I can't believe it. I just want to eat it so so bad.");
+        listing.setDescription("The quickest way to get a DIY Diamond Sword! Features everything you need to craft your own (Crafting Table not supplied).");
         listing.setFeatures(Map.of("Features", List.of(
-                "Flexibility. The chicken is raw! Unlimited possibilities.",
-                "Sexy. This chicken is very sexy."
+                "Sticks! Includes a stick for the handle, so you can get a hold on that mob problem.",
+                "Diamonds. Diamonds are the very toughest material, so it lasts for a long time and doesn't get away from you."
         )));
         listing.setPictureTransforms(List.of("skewY(12deg)", "skewY(-12deg)", "rotate(34deg)"));
 
@@ -85,9 +86,9 @@ public class DatabaseManager {
         listing.setBulkMultipliers(List.of(0.9, 0.85, 0.8));
 
         // Items
-        listing.setItems(List.of(new ItemStack(Material.ANVIL)));
+        listing.setItems(List.of(new ItemStack(Material.DIAMOND, 2), new ItemStack(Material.STICK, 1)));
         listing.setVendorID(id);
-        listing.setSaleMultipler(1); // No sale
+        listing.setSaleMultipler(0.9); // No sale
 
         listings.insertOne(listing);
         */
