@@ -51,16 +51,17 @@ public final class TradeCraft extends JavaPlugin {
         // Setup listener
         getServer().getPluginManager().registerEvents(new VirtualInventoryListener(), this);
 
-        // Start web server after config loading
+        // Start unpacking
+        assetUnpacker.prepareUnpack();
+        // Download bundle
+        bundledAssetsDownloader.prepareBundle();
+
+        // Start web server after config loading and unpacking assets
         ItemStackSerializer.init();
         webServer = new WebServer();
 
         // At this point, we're technically up for business
 
-        // Start unpacking
-        assetUnpacker.prepareUnpack();
-        // Download bundle
-        bundledAssetsDownloader.prepareBundle();
 
         // Start account link manager cleanup
         new BukkitRunnable(){
@@ -72,8 +73,6 @@ public final class TradeCraft extends JavaPlugin {
 
         // Register authorize command
         getServer().getCommandMap().register("authorize", "tc", new AuthorizedWebCommand());
-
-
     }
 
     @Override

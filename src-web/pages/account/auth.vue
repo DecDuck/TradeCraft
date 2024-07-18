@@ -1,13 +1,8 @@
 <template>
   <Card class="m-4 flex flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img
-        class="mx-auto h-10 w-auto"
-        :src="'/api/v1/branding/banner'"
-        :alt="appConfig.app_name"
-      />
       <h2
-        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-zinc-100"
+        class="text-center text-2xl font-bold leading-9 tracking-tight text-zinc-100"
       >
         Add or update your username & password
       </h2>
@@ -102,17 +97,21 @@ const user = useUser();
 const appConfig = useState<{ app_name: string }>("appConfig");
 
 function submit() {
+  loading.value = true;
   $fetch("/api/v1/auth/setupacc", {
     method: "POST",
     body: { username: username.value, password: password.value },
   })
     .then(async () => {
       user.value = await $fetch("/api/v1/auth/fetch");
-      router.push("/settings");
+      router.push("/account");
     })
     .catch((err) => {
       error.value =
         err.data || "An unknown error occurred. Please reload the page.";
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 
