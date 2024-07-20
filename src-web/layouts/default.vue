@@ -40,22 +40,55 @@
             leave-to="-translate-x-full"
           >
             <DialogPanel
-              class="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl"
+              class="relative flex w-full max-w-sm flex-col overflow-y-auto bg-zinc-900 pb-12 shadow-xl"
             >
-              <div class="flex px-4 pb-2 pt-5">
-                <button
-                  type="button"
-                  class="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
-                  @click="open = false"
-                >
-                  <span class="sr-only">Close menu</span>
-                  <XMarkIcon class="h-6 w-6" aria-hidden="true" />
-                </button>
+              <div class="w-full flex flex-row justify-between px-4 pb-2 pt-5">
+                <div class="flex">
+                  <button
+                    type="button"
+                    class="-m-2 inline-flex items-center justify-center rounded-md p-2 text-zinc-500"
+                    @click="open = false"
+                  >
+                    <span class="sr-only">Close menu</span>
+                    <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                  </button>
+                </div>
+                <div class="flex items-center">
+                  <!-- Search -->
+                  <a href="#" class="p-2 text-zinc-500 hover:text-zinc-600">
+                    <span class="sr-only">Search</span>
+                    <MagnifyingGlassIcon class="h-6 w-6" aria-hidden="true" />
+                  </a>
+
+                  <!-- Account -->
+                  <NuxtLink
+                    href="/account"
+                    class="p-2 text-zinc-500 hover:text-zinc-600"
+                  >
+                    <span class="sr-only">Account</span>
+                    <UserIcon class="h-6 w-6" aria-hidden="true" />
+                  </NuxtLink>
+
+                  <!-- Cart -->
+                  <div class="ml-2 flow-root">
+                    <a href="#" class="group -m-2 flex items-center p-2">
+                      <ShoppingBagIcon
+                        class="h-6 w-6 flex-shrink-0 text-zinc-500 group-hover:text-zinc-600"
+                        aria-hidden="true"
+                      />
+                      <span
+                        class="ml-2 text-sm font-medium text-zinc-400 group-hover:text-zinc-500"
+                        >0</span
+                      >
+                      <span class="sr-only">items in cart, view bag</span>
+                    </a>
+                  </div>
+                </div>
               </div>
 
               <!-- Links -->
               <TabGroup as="div" class="mt-2">
-                <div class="border-b border-gray-200">
+                <div class="border-b border-zinc-700">
                   <TabList class="-mb-px flex space-x-8 px-4">
                     <Tab
                       as="template"
@@ -66,8 +99,8 @@
                       <button
                         :class="[
                           selected
-                            ? 'border-indigo-600 text-indigo-600'
-                            : 'border-transparent text-gray-900',
+                            ? 'border-cyan-200 text-cyan-200'
+                            : 'border-transparent text-zinc-200',
                           'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium',
                         ]"
                       >
@@ -86,7 +119,7 @@
                       <div
                         v-for="(item, itemIdx) in category.featured"
                         :key="itemIdx"
-                        class="group aspect-h-1 aspect-w-1 relative overflow-hidden rounded-md bg-gray-100"
+                        class="group aspect-h-1 aspect-w-1 relative overflow-hidden rounded-md bg-zinc-900"
                       >
                         <img
                           :src="item.imageSrc"
@@ -95,11 +128,11 @@
                         />
                         <div class="flex flex-col justify-end">
                           <div
-                            class="bg-white bg-opacity-60 p-4 text-base sm:text-sm"
+                            class="bg-zinc-900 bg-opacity-60 p-4 text-base sm:text-sm"
                           >
                             <a
                               :href="item.href"
-                              class="font-medium text-gray-900"
+                              class="font-medium text-zinc-200"
                             >
                               <span
                                 class="absolute inset-0"
@@ -109,7 +142,7 @@
                             </a>
                             <p
                               aria-hidden="true"
-                              class="mt-0.5 text-gray-700 sm:mt-1"
+                              class="mt-0.5 text-zinc-300 sm:mt-1"
                             >
                               Shop now
                             </p>
@@ -125,7 +158,7 @@
                       <div v-for="section in column" :key="section.name">
                         <p
                           :id="`${category.id}-${section.id}-heading-mobile`"
-                          class="font-medium text-gray-900"
+                          class="font-medium text-zinc-200"
                         >
                           {{ section.name }}
                         </p>
@@ -141,7 +174,7 @@
                           >
                             <a
                               :href="item.href"
-                              class="-m-2 block p-2 text-gray-500"
+                              class="-m-2 block p-2 text-gray-400"
                               >{{ item.name }}</a
                             >
                           </li>
@@ -152,7 +185,7 @@
                 </TabPanels>
               </TabGroup>
 
-              <div class="space-y-6 border-t border-gray-200 px-4 py-6">
+              <div class="space-y-6 border-t border-zinc-700 px-4 py-6">
                 <div
                   v-for="page in navigation.pages"
                   :key="page.name"
@@ -160,24 +193,10 @@
                 >
                   <a
                     :href="page.href"
-                    class="-m-2 block p-2 font-medium text-gray-900"
+                    class="-m-2 block p-2 font-medium text-zinc-200"
                     >{{ page.name }}</a
                   >
                 </div>
-              </div>
-
-              <div class="border-t border-gray-200 px-4 py-6">
-                <a href="#" class="-m-2 flex items-center p-2">
-                  <img
-                    src="https://tailwindui.com/img/flags/flag-canada.svg"
-                    alt=""
-                    class="block h-auto w-5 flex-shrink-0"
-                  />
-                  <span class="ml-3 block text-base font-medium text-gray-900"
-                    >CAD</span
-                  >
-                  <span class="sr-only">, change currency</span>
-                </a>
               </div>
             </DialogPanel>
           </TransitionChild>
@@ -192,17 +211,12 @@
             <div class="flex flex-1 items-center lg:hidden">
               <button
                 type="button"
-                class="-ml-2 rounded-md bg-white p-2 text-gray-400"
+                class="-ml-2 rounded-md p-2 text-zinc-500"
                 @click="open = true"
               >
                 <span class="sr-only">Open menu</span>
                 <Bars3Icon class="h-6 w-6" aria-hidden="true" />
               </button>
-
-              <a href="#" class="ml-2 p-2 text-gray-400 hover:text-gray-500">
-                <span class="sr-only">Search</span>
-                <MagnifyingGlassIcon class="h-6 w-6" aria-hidden="true" />
-              </a>
             </div>
 
             <!-- Flyout menus -->
@@ -249,7 +263,9 @@
                         aria-hidden="true"
                       />
 
-                      <div class="relative bg-zinc-900 border-b border-zinc-700">
+                      <div
+                        class="relative bg-zinc-900 border-b border-zinc-700"
+                      >
                         <div class="mx-auto max-w-7xl px-8">
                           <div class="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
                             <div
@@ -354,18 +370,17 @@
             </NuxtLink>
 
             <div class="flex flex-1 items-center justify-end">
-
               <!-- Search -->
-              <a
-                href="#"
-                class="ml-6 hidden p-2 text-zinc-500 hover:text-zinc-600 lg:block"
-              >
+              <a href="#" class="ml-6 p-2 text-zinc-500 hover:text-zinc-600">
                 <span class="sr-only">Search</span>
                 <MagnifyingGlassIcon class="h-6 w-6" aria-hidden="true" />
               </a>
 
               <!-- Account -->
-              <NuxtLink href="/account" class="p-2 text-zinc-500 hover:text-zinc-600 lg:ml-4">
+              <NuxtLink
+                href="/account"
+                class="hidden lg:block p-2 text-zinc-500 hover:text-zinc-600 lg:ml-4"
+              >
                 <span class="sr-only">Account</span>
                 <UserIcon class="h-6 w-6" aria-hidden="true" />
               </NuxtLink>
@@ -390,7 +405,7 @@
       </nav>
     </header>
 
-    <div class="grow flex justify-center">
+    <div class="grow flex flex-col justify-center">
       <slot />
     </div>
   </div>

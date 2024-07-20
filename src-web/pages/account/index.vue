@@ -13,13 +13,13 @@
           Tired of linking?
         </h2>
         <p class="mt-3 text-zinc-400 text-md">
-          Linking your accounte every time you want to use the online dashboard
-          can get annoying and repetitive. Configure a username and password to
-          log in with to avoid having to link each time!
+          Linking your account every time can get annoying and repetitive.
+          Configure a username and password to log in with to avoid having to
+          link each time!
         </p>
         <div class="mt-6 flex items-center gap-x-6">
           <NuxtLink
-            href="/setupacc"
+            href="/account/auth"
             class="rounded-md bg-cyan-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
             >Get started</NuxtLink
           >
