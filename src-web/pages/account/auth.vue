@@ -1,5 +1,5 @@
 <template>
-  <Card class="m-4 flex flex-col justify-center px-6 py-12 lg:px-8">
+  <Card class="mx-auto mt-8 w-fit flex flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <h2
         class="text-center text-2xl font-bold leading-9 tracking-tight text-zinc-100"
@@ -17,7 +17,7 @@
         <div>
           <label
             for="username"
-            class="block text-sm font-medium leading-6 text-zinc-300"
+            class="block text-sm font-bold leading-6 text-zinc-300"
             >Username</label
           >
           <div class="mt-2">
@@ -38,7 +38,7 @@
           <div class="flex items-center justify-between">
             <label
               for="password"
-              class="block text-sm font-medium leading-6 text-zinc-300"
+              class="block text-sm font-bold leading-6 text-zinc-300"
               >Password</label
             >
           </div>
@@ -72,7 +72,7 @@
               <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-400">
+              <h3 class="text-sm font-bold text-red-400">
                 {{ error }}
               </h3>
             </div>

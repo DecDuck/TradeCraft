@@ -8,7 +8,11 @@ import com.decduck3.tradecraft.utils.AssetUnpacker;
 import com.decduck3.tradecraft.utils.BundledAssetsDownloader;
 import com.decduck3.tradecraft.web.WebServer;
 import com.decduck3.tradecraft.web.data.ItemStackSerializer;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +32,8 @@ public final class TradeCraft extends JavaPlugin {
     private static AccountLinkManager accountLinkManager;
     private static DatabaseManager databaseManager;
     private static TradeCraft singleton;
+
+    private static VirtualInventoryListener virtualInventoryListener;
 
     public TradeCraft() {
         singleton = this;
@@ -49,7 +55,8 @@ public final class TradeCraft extends JavaPlugin {
         databaseManager = new DatabaseManager();
 
         // Setup listener
-        getServer().getPluginManager().registerEvents(new VirtualInventoryListener(), this);
+        virtualInventoryListener = new VirtualInventoryListener();
+        getServer().getPluginManager().registerEvents(virtualInventoryListener, this);
 
         // Start unpacking
         assetUnpacker.prepareUnpack();
@@ -77,10 +84,17 @@ public final class TradeCraft extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        // Save all players
+        for(Player player : Bukkit.getServer().getOnlinePlayers()){
+            virtualInventoryListener.onPlayerLeave(new PlayerQuitEvent(player, ""));
+        }
+
+        // Destroy webserver
         if (webServer != null) {
             webServer.destroy();
         }
+
+        // Close DB
         databaseManager.close();
     }
 

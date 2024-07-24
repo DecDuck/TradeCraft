@@ -67,7 +67,7 @@ public class BundledAssetsDownloader {
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             if(bundleLocation == null){
-                bundleLocation = "https://nightly.link/TradeCraftMC/minecraft-render/workflows/ci/master/test-result.zip";
+                bundleLocation = "https://s3.deepcore.dev/downloads/1.21.zip";
             }
             HttpGet webBundle = new HttpGet(bundleLocation);
             HttpResponse webBundleResponse = client.execute(webBundle);

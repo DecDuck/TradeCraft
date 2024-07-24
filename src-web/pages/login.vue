@@ -32,7 +32,7 @@
               <div>
                 <label
                   for="username"
-                  class="block text-sm font-medium leading-6 text-zinc-300"
+                  class="block text-sm font-bold leading-6 text-zinc-300"
                   >Username</label
                 >
                 <div class="mt-2">
@@ -52,7 +52,7 @@
               <div>
                 <label
                   for="password"
-                  class="block text-sm font-medium leading-6 text-zinc-300"
+                  class="block text-sm font-bold leading-6 text-zinc-300"
                   >Password</label
                 >
                 <div class="mt-2">
@@ -91,7 +91,7 @@
                     />
                   </div>
                   <div class="ml-3">
-                    <h3 class="text-sm font-medium text-red-400">
+                    <h3 class="text-sm font-bold text-red-400">
                       {{ error }}
                     </h3>
                   </div>

@@ -71,17 +71,17 @@
 
                   <!-- Cart -->
                   <div class="ml-2 flow-root">
-                    <a href="#" class="group -m-2 flex items-center p-2">
+                    <NuxtLink href="/cart" class="group -m-2 flex items-center p-2">
                       <ShoppingBagIcon
                         class="h-6 w-6 flex-shrink-0 text-zinc-500 group-hover:text-zinc-600"
                         aria-hidden="true"
                       />
                       <span
-                        class="ml-2 text-sm font-medium text-zinc-400 group-hover:text-zinc-500"
+                        class="ml-2 text-sm font-bold text-zinc-400 group-hover:text-zinc-500"
                         >0</span
                       >
                       <span class="sr-only">items in cart, view bag</span>
-                    </a>
+                    </NuxtLink>
                   </div>
                 </div>
               </div>
@@ -101,7 +101,7 @@
                           selected
                             ? 'border-cyan-200 text-cyan-200'
                             : 'border-transparent text-zinc-200',
-                          'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium',
+                          'flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-bold',
                         ]"
                       >
                         {{ category.name }}
@@ -132,7 +132,7 @@
                           >
                             <a
                               :href="item.href"
-                              class="font-medium text-zinc-200"
+                              class="font-bold text-zinc-200"
                             >
                               <span
                                 class="absolute inset-0"
@@ -158,7 +158,7 @@
                       <div v-for="section in column" :key="section.name">
                         <p
                           :id="`${category.id}-${section.id}-heading-mobile`"
-                          class="font-medium text-zinc-200"
+                          class="font-bold text-zinc-200"
                         >
                           {{ section.name }}
                         </p>
@@ -193,7 +193,7 @@
                 >
                   <a
                     :href="page.href"
-                    class="-m-2 block p-2 font-medium text-zinc-200"
+                    class="-m-2 block p-2 font-bold text-zinc-200"
                     >{{ page.name }}</a
                   >
                 </div>
@@ -234,7 +234,7 @@
                         open
                           ? 'text-cyan-200'
                           : 'text-zinc-500 hover:text-zinc-600',
-                        'relative z-10 flex items-center justify-center text-sm font-medium transition-colors duration-200 ease-out',
+                        'relative z-10 flex items-center justify-center text-sm font-bold transition-colors duration-200 ease-out',
                       ]"
                     >
                       {{ category.name }}
@@ -290,7 +290,7 @@
                                   >
                                     <a
                                       :href="item.href"
-                                      class="font-medium text-zinc-200"
+                                      class="font-bold text-zinc-200"
                                     >
                                       <span
                                         class="absolute inset-0"
@@ -322,7 +322,7 @@
                                 >
                                   <p
                                     :id="`${category.id}-${section.id}-heading`"
-                                    class="font-medium text-zinc-200"
+                                    class="font-bold text-zinc-200"
                                   >
                                     {{ section.name }}
                                   </p>
@@ -357,7 +357,7 @@
                   v-for="page in navigation.pages"
                   :key="page.name"
                   :href="page.href"
-                  class="flex items-center text-sm font-medium text-zinc-500 hover:text-zinc-600"
+                  class="flex items-center text-sm font-bold text-zinc-500 hover:text-zinc-600"
                   >{{ page.name }}</a
                 >
               </div>
@@ -366,7 +366,7 @@
             <!-- Logo -->
             <NuxtLink href="/" class="flex">
               <span class="sr-only">Your Company</span>
-              <img class="h-8 w-auto" :src="'/api/v1/branding/banner'" alt="" />
+              <img class="h-6 sm:h-8 w-auto" :src="'/api/v1/branding/banner'" alt="" />
             </NuxtLink>
 
             <div class="flex flex-1 items-center justify-end">
@@ -387,17 +387,17 @@
 
               <!-- Cart -->
               <div class="ml-4 flow-root lg:ml-6">
-                <a href="#" class="group -m-2 flex items-center p-2">
+                <NuxtLink href="/cart" class="group -m-2 flex items-center p-2">
                   <ShoppingBagIcon
                     class="h-6 w-6 flex-shrink-0 text-zinc-500 group-hover:text-zinc-600"
                     aria-hidden="true"
                   />
                   <span
-                    class="ml-2 text-sm font-medium text-zinc-400 group-hover:text-zinc-500"
+                    class="ml-2 text-sm font-bold text-zinc-400 group-hover:text-zinc-500"
                     >0</span
                   >
                   <span class="sr-only">items in cart, view bag</span>
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </div>
@@ -439,8 +439,8 @@ import {
 const navigation = {
   categories: [
     {
-      id: "women",
-      name: "Women",
+      id: "listings",
+      name: "Items & Blocks",
       featured: [
         {
           name: "New Arrivals",
@@ -535,8 +535,8 @@ const navigation = {
       ],
     },
     {
-      id: "men",
-      name: "Men",
+      id: "vendors",
+      name: "Vendors",
       featured: [
         {
           name: "Accessories",
@@ -628,7 +628,6 @@ const navigation = {
   ],
   pages: [
     { name: "Company", href: "#" },
-    { name: "Stores", href: "#" },
   ],
 };
 

@@ -1,9 +1,7 @@
-export const createAssetUrl = (translationKey: string) => {
+export const createAssetUrl = (translationKey: string, size=16) => {
     const parts = translationKey.split('.');
     switch(parts[0]){
-        case "block":
+        default:
             return `/api/v1/asset/render/${parts[2]}.png`;
-        case `item`:
-            return `/api/v1/asset/textures/item/${parts[2]}.png`;
     }
 }

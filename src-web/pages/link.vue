@@ -36,7 +36,7 @@
             <div class="w-full border-t border-zinc-700" />
           </div>
           <div
-            class="relative flex justify-center text-sm font-medium leading-6"
+            class="relative flex justify-center text-sm font-bold leading-6"
           >
             <span class="bg-zinc-900 px-6 text-zinc-100">Or continue with</span>
           </div>
@@ -57,7 +57,7 @@
             <XCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
           </div>
           <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-400">
+            <h3 class="text-sm font-bold text-red-400">
               {{ error }}
             </h3>
           </div>

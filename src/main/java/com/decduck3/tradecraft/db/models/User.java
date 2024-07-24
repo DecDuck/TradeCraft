@@ -14,12 +14,10 @@ public class User {
     private ObjectId id;
     private String playerUUID;
 
-
     // Alternative login details
     private boolean alternativeLogin;
     private String alternativeUsername;
     private String alternativePasswordHash;
-
 
     // Cached objects
     private String cUsername;

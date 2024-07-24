@@ -42,6 +42,10 @@ public class ItemStackSerializer implements TypeAdapterFactory {
     private static class ItemStackAdapter extends TypeAdapter<ItemStack> {
         @Override
         public void write(JsonWriter jsonWriter, ItemStack itemStack) throws IOException {
+            if(itemStack == null){
+                jsonWriter.nullValue();
+                return;
+            }
             jsonWriter.beginObject();
             jsonWriter.name("id");
             jsonWriter.value(itemStack.getType().getKey().toString());

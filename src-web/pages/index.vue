@@ -24,7 +24,7 @@
         </p>
         <a
           href="#"
-          class="mt-8 inline-block rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100"
+          class="mt-8 inline-block rounded-md border border-transparent bg-white px-8 py-3 text-base font-bold text-gray-900 hover:bg-gray-100"
           >Shop New Arrivals</a
         >
       </div>
@@ -135,7 +135,7 @@
             </p>
             <a
               href="#"
-              class="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100 sm:w-auto"
+              class="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-bold text-gray-900 hover:bg-gray-100 sm:w-auto"
               >Shop Workspace</a
             >
           </div>
@@ -219,7 +219,7 @@
             </p>
             <a
               href="#"
-              class="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100 sm:w-auto"
+              class="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-bold text-gray-900 hover:bg-gray-100 sm:w-auto"
               >Shop Focus</a
             >
           </div>
